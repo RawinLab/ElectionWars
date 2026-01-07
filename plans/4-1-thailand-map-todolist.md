@@ -44,9 +44,9 @@
 - [x] T140 P1 US-024 Load province_state from database [agent: multi-platform-apps:backend-architect] [deps: T092] [files: src/components/Map.js]
 - [x] T141 P2 US-024 Implement updateProvinceColor() method [agent: multi-platform-apps:frontend-developer] [deps: T139, T140] [files: src/components/Map.js]
 - [x] T142 P2 US-024 Create CSS classes for all party colors [agent: multi-platform-apps:frontend-developer] [deps: T088] [files: src/styles/map.css]
-- [ ] T143 P3 US-024 Test province colors update correctly [agent: full-stack-orchestration:test-automator] [deps: T141] [files: tests/e2e/map-colors.spec.js]
+- [x] T143 P3 US-024 Test province colors update correctly [agent: full-stack-orchestration:test-automator] [deps: T141] [files: tests/e2e/map-colors.spec.js]
 
-### Story Progress: 4/5
+### Story Progress: 5/5
 
 ---
 
@@ -65,9 +65,9 @@
 - [x] T145 P1 US-025 Create handleClick() method with RPC call [agent: multi-platform-apps:backend-architect] [deps: T144, T043] [files: src/components/Map.js]
 - [x] T146 P2 US-025 Add optimistic UI update before RPC [agent: multi-platform-apps:frontend-developer] [deps: T145] [files: src/components/Map.js]
 - [x] T147 P2 US-025 Handle click response (defend/attack/capture) [agent: multi-platform-apps:frontend-developer] [deps: T145] [files: src/components/Map.js]
-- [ ] T148 P3 US-025 Test click triggers correct RPC call [agent: full-stack-orchestration:test-automator] [deps: T145] [files: tests/integration/map-click.test.js]
+- [x] T148 P3 US-025 Test click triggers correct RPC call [agent: full-stack-orchestration:test-automator] [deps: T145] [files: tests/integration/map-click.test.js]
 
-### Story Progress: 4/5
+### Story Progress: 5/5
 
 ---
 
@@ -87,9 +87,9 @@
 - [x] T150 P2 US-026 Add mouseover/mouseout handlers to provinces [agent: multi-platform-apps:frontend-developer] [deps: T149] [files: src/components/Map.js]
 - [x] T151 P2 US-026 Display province name, shield, controlling party [agent: multi-platform-apps:frontend-developer] [deps: T149] [files: src/components/Tooltip.js]
 - [x] T152 P2 US-026 Add CSS styling for tooltip [agent: multi-platform-apps:frontend-developer] [deps: T149] [files: src/styles/components.css]
-- [ ] T153 P3 US-026 Test tooltip displays correct information [agent: full-stack-orchestration:test-automator] [deps: T151] [files: tests/e2e/tooltip.spec.js]
+- [x] T153 P3 US-026 Test tooltip displays correct information [agent: full-stack-orchestration:test-automator] [deps: T151] [files: tests/e2e/tooltip.spec.js]
 
-### Story Progress: 4/5
+### Story Progress: 5/5
 
 ---
 
@@ -99,7 +99,7 @@
 ### Acceptance Criteria
 - [x] Province pulses/scales on click
 - [x] Floating +1/-1 animates upward from click position
-- [ ] Click sound plays (if enabled)
+- [x] Click sound plays (if enabled)
 - [x] Different colors for defend (+1 green) vs attack (-1 red)
 - [x] Capture shows special animation
 
@@ -107,10 +107,10 @@
 - [x] T154 P2 US-027 Implement showClickFeedback() method [agent: multi-platform-apps:frontend-developer] [deps: T145] [files: src/components/Map.js]
 - [x] T155 P2 US-027 Create floating +1/-1 animation element [agent: multi-platform-apps:frontend-developer] [deps: T154] [files: src/components/Map.js]
 - [x] T156 P2 US-027 Add province pulse animation CSS [agent: multi-platform-apps:frontend-developer] [deps: none] [files: src/styles/map.css]
-- [ ] T157 P2 US-027 Load and play click sound [agent: multi-platform-apps:frontend-developer] [deps: T154] [files: src/components/Map.js, public/sounds/click.mp3]
-- [ ] T158 P3 US-027 Test click animations appear correctly [agent: full-stack-orchestration:test-automator] [deps: T156] [files: tests/e2e/click-feedback.spec.js]
+- [x] T157 P2 US-027 Load and play click sound [agent: multi-platform-apps:frontend-developer] [deps: T154] [files: src/components/Map.js, public/sounds/click.mp3]
+- [x] T158 P3 US-027 Test click animations appear correctly [agent: full-stack-orchestration:test-automator] [deps: T156] [files: tests/e2e/click-feedback.spec.js]
 
-### Story Progress: 3/5
+### Story Progress: 5/5
 
 ---
 
