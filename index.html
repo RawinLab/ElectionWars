@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Election War - Real-time political clicker game for Thailand's 2026 election">
+  <meta name="keywords" content="thailand, election, game, political, clicker, 2026">
+  <meta name="author" content="RawinLab">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Election War - อีเลคชั่น วอร์">
+  <meta property="og:description" content="เลือกพรรคของคุณและแข่งขันยึดครอง 77 จังหวัด!">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="th_TH">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+  <title>Election War - อีเลคชั่น วอร์ 🗳️</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Party Selector Screen -->
+    <div id="party-selector" class="screen">
+      <header class="header">
+        <h1>Election War</h1>
+        <p class="subtitle">อีเลคชั่น วอร์ 🗳️</p>
+      </header>
+
+      <main class="party-selector-content">
+        <h2 id="choose-party-title">เลือกพรรคของคุณ / Choose Your Party</h2>
+        <div id="party-grid" class="party-grid">
+          <!-- Dynamically populated -->
+          <div class="loading">Loading parties...</div>
+        </div>
+
+        <div id="selected-party" class="selected-party hidden">
+          <div id="party-preview" class="party-preview"></div>
+          <input
+            type="text"
+            id="nickname-input"
+            placeholder="ชื่อเล่น / Nickname"
+            maxlength="20"
+            autocomplete="off"
+          >
+          <p id="nickname-error" class="error hidden"></p>
+          <button id="join-button" class="btn btn-primary">
+            เข้าร่วมเกม / Join Game
+          </button>
+        </div>
+      </main>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+      <header class="game-header">
+        <div class="header-left">
+          <div id="player-info" class="player-info"></div>
+        </div>
+        <div class="header-center">
+          <div id="game-timer" class="game-timer"></div>
+        </div>
+        <div class="header-right">
+          <div id="connection-status" class="connection-status"></div>
+          <button id="settings-btn" class="btn btn-icon" title="Settings">⚙️</button>
+        </div>
+      </header>
+
+      <main class="game-main">
+        <aside class="sidebar">
+          <div id="global-stats" class="global-stats"></div>
+          <div id="leaderboard" class="leaderboard"></div>
+        </aside>
+
+        <section class="map-container">
+          <div id="thailand-map" class="thailand-map">
+            <!-- SVG map loaded here -->
+            <div class="loading">Loading map...</div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="game-footer">
+        <!-- AdSense container (placeholder) -->
+        <div id="ad-container" class="ad-container">
+          <!-- Google AdSense code will be inserted here after approval -->
+        </div>
+      </footer>
+    </div>
+
+    <!-- Game End Screen -->
+    <div id="game-end-screen" class="screen hidden">
+      <div class="game-end-overlay">
+        <h1>🏆 Game Ended! 🏆</h1>
+        <div id="final-results" class="final-results"></div>
+        <button id="view-map-btn" class="btn btn-secondary">View Final Map</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Settings Panel -->
+  <div id="settings-panel" class="settings-panel hidden"></div>
+
+  <!-- Province Tooltip -->
+  <div id="province-tooltip" class="province-tooltip hidden"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
