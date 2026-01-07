@@ -1,5 +1,6 @@
 # Election War (อีเลคชั่น วอร์)
 
+[![CI/CD](https://github.com/rawinlab/ElectionWars/actions/workflows/deploy.yml/badge.svg)](https://github.com/rawinlab/ElectionWars/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Firebase Hosting](https://img.shields.io/badge/Hosted%20on-Firebase-orange)](https://firebase.google.com/)
 [![Supabase](https://img.shields.io/badge/Backend-Supabase-3ECF8E)](https://supabase.com/)

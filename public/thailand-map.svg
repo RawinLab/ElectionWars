@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" width="600" height="900">
+  <title>Thailand Map - 77 Provinces</title>
+  <desc>Interactive SVG map of Thailand with all 77 provinces for election game</desc>
+
+  <defs>
+    <style>
+      .province {
+        fill: #E0E0E0;
+        stroke: #FFFFFF;
+        stroke-width: 1;
+        cursor: pointer;
+        transition: fill 0.2s ease;
+      }
+      .province:hover {
+        fill: #BDBDBD;
+      }
+    </style>
+  </defs>
+
+  <g id="thailand-provinces">
+    <!-- Northern Region -->
+    <!-- 45: Chiang Rai -->
+    <path class="province" data-id="45" data-name-thai="เชียงราย" data-name-english="Chiang Rai" data-region="Northern"
+          d="M280,25 L320,20 L355,35 L365,55 L355,80 L340,95 L310,100 L285,95 L265,80 L260,55 L270,35 Z"/>
+
+    <!-- 44: Phayao -->
+    <path class="province" data-id="44" data-name-thai="พะเยา" data-name-english="Phayao" data-region="Northern"
+          d="M310,100 L340,95 L355,110 L350,135 L330,150 L305,145 L290,130 L295,110 Z"/>
+
+    <!-- 43: Nan -->
+    <path class="province" data-id="43" data-name-thai="น่าน" data-name-english="Nan" data-region="Northern"
+          d="M355,80 L380,75 L405,90 L415,120 L405,155 L385,175 L355,170 L350,135 L355,110 L340,95 L355,80 Z"/>
+
+    <!-- 46: Mae Hong Son -->
+    <path class="province" data-id="46" data-name-thai="แม่ฮ่องสอน" data-name-english="Mae Hong Son" data-region="Northern"
+          d="M175,75 L205,70 L230,85 L240,115 L235,150 L220,180 L190,185 L165,165 L160,130 L165,95 Z"/>
+
+    <!-- 38: Chiang Mai -->
+    <path class="province" data-id="38" data-name-thai="เชียงใหม่" data-name-english="Chiang Mai" data-region="Northern"
+          d="M230,85 L265,80 L285,95 L290,130 L285,165 L270,195 L240,200 L220,180 L235,150 L240,115 Z"/>
+
+    <!-- 39: Lamphun -->
+    <path class="province" data-id="39" data-name-thai="ลำพูน" data-name-english="Lamphun" data-region="Northern"
+          d="M270,195 L285,190 L300,205 L295,230 L275,240 L260,225 L265,205 Z"/>
+
+    <!-- 40: Lampang -->
+    <path class="province" data-id="40" data-name-thai="ลำปาง" data-name-english="Lampang" data-region="Northern"
+          d="M290,130 L305,145 L330,150 L350,165 L355,195 L340,225 L310,235 L295,230 L300,205 L285,190 L285,165 Z"/>
+
+    <!-- 42: Phrae -->
+    <path class="province" data-id="42" data-name-thai="แพร่" data-name-english="Phrae" data-region="Northern"
+          d="M350,165 L355,170 L385,175 L390,200 L375,230 L350,235 L340,225 L355,195 Z"/>
+
+    <!-- 41: Uttaradit -->
+    <path class="province" data-id="41" data-name-thai="อุตรดิตถ์" data-name-english="Uttaradit" data-region="Northern"
+          d="M385,175 L405,155 L420,165 L425,195 L415,225 L390,235 L375,230 L390,200 Z"/>
+
+    <!-- 50: Tak -->
+    <path class="province" data-id="50" data-name-thai="ตาก" data-name-english="Tak" data-region="Western"
+          d="M190,185 L220,180 L240,200 L260,225 L265,260 L255,305 L235,340 L200,345 L175,310 L170,260 L175,215 Z"/>
+
+    <!-- 51: Sukhothai -->
+    <path class="province" data-id="51" data-name-thai="สุโขทัย" data-name-english="Sukhothai" data-region="Central"
+          d="M310,235 L340,225 L350,235 L360,265 L345,290 L320,295 L300,280 L305,255 Z"/>
+
+    <!-- 52: Phitsanulok -->
+    <path class="province" data-id="52" data-name-thai="พิษณุโลก" data-name-english="Phitsanulok" data-region="Central"
+          d="M350,235 L375,230 L390,235 L400,265 L390,300 L365,310 L345,290 L360,265 Z"/>
+
+    <!-- 54: Phetchabun -->
+    <path class="province" data-id="54" data-name-thai="เพชรบูรณ์" data-name-english="Phetchabun" data-region="Central"
+          d="M390,235 L415,225 L435,240 L445,280 L440,330 L420,365 L390,360 L375,325 L390,300 L400,265 Z"/>
+
+    <!-- 30: Loei -->
+    <path class="province" data-id="30" data-name-thai="เลย" data-name-english="Loei" data-region="Northeastern"
+          d="M415,225 L425,195 L450,185 L480,195 L495,225 L490,265 L465,285 L445,280 L435,240 Z"/>
+
+    <!-- 49: Kamphaeng Phet -->
+    <path class="province" data-id="49" data-name-thai="กำแพงเพชร" data-name-english="Kamphaeng Phet" data-region="Central"
+          d="M265,260 L305,255 L300,280 L320,295 L315,330 L290,345 L265,330 L255,305 Z"/>
+
+    <!-- 53: Phichit -->
+    <path class="province" data-id="53" data-name-thai="พิจิตร" data-name-english="Phichit" data-region="Central"
+          d="M320,295 L345,290 L365,310 L360,340 L340,355 L315,350 L315,330 Z"/>
+
+    <!-- 47: Nakhon Sawan -->
+    <path class="province" data-id="47" data-name-thai="นครสวรรค์" data-name-english="Nakhon Sawan" data-region="Central"
+          d="M290,345 L315,330 L315,350 L340,355 L360,340 L375,360 L365,395 L340,410 L305,405 L280,380 L275,355 Z"/>
+
+    <!-- 48: Uthai Thani -->
+    <path class="province" data-id="48" data-name-thai="อุทัยธานี" data-name-english="Uthai Thani" data-region="Central"
+          d="M235,340 L255,305 L265,330 L275,355 L280,380 L265,405 L240,400 L225,370 Z"/>
+
+    <!-- 56: Kanchanaburi -->
+    <path class="province" data-id="56" data-name-thai="กาญจนบุรี" data-name-english="Kanchanaburi" data-region="Western"
+          d="M175,310 L200,345 L235,340 L225,370 L240,400 L235,450 L220,490 L190,510 L160,490 L145,440 L150,380 L160,340 Z"/>
+
+    <!-- 31: Nong Khai -->
+    <path class="province" data-id="31" data-name-thai="หนองคาย" data-name-english="Nong Khai" data-region="Northeastern"
+          d="M430,140 L465,135 L500,145 L515,165 L505,190 L480,195 L450,185 L440,160 Z"/>
+
+    <!-- 77: Bueng Kan -->
+    <path class="province" data-id="77" data-name-thai="บึงกาฬ" data-name-english="Bueng Kan" data-region="Northeastern"
+          d="M500,145 L535,150 L560,170 L555,200 L530,215 L505,205 L505,190 L515,165 Z"/>
+
+    <!-- 27: Nong Bua Lamphu -->
+    <path class="province" data-id="27" data-name-thai="หนองบัวลำภู" data-name-english="Nong Bua Lamphu" data-region="Northeastern"
+          d="M450,185 L480,195 L495,225 L485,250 L460,255 L445,240 L450,210 Z"/>
+
+    <!-- 29: Udon Thani -->
+    <path class="province" data-id="29" data-name-thai="อุดรธานี" data-name-english="Udon Thani" data-region="Northeastern"
+          d="M480,195 L505,190 L505,205 L530,215 L535,245 L520,275 L490,280 L465,285 L490,265 L495,225 Z"/>
+
+    <!-- 35: Sakon Nakhon -->
+    <path class="province" data-id="35" data-name-thai="สกลนคร" data-name-english="Sakon Nakhon" data-region="Northeastern"
+          d="M530,215 L555,200 L575,215 L575,250 L560,280 L535,285 L520,275 L535,245 Z"/>
+
+    <!-- 36: Nakhon Phanom -->
+    <path class="province" data-id="36" data-name-thai="นครพนม" data-name-english="Nakhon Phanom" data-region="Northeastern"
+          d="M560,280 L575,250 L590,265 L590,305 L575,330 L555,325 L545,300 Z"/>
+
+    <!-- 28: Khon Kaen -->
+    <path class="province" data-id="28" data-name-thai="ขอนแก่น" data-name-english="Khon Kaen" data-region="Northeastern"
+          d="M465,285 L490,280 L520,275 L535,285 L530,320 L510,350 L480,355 L455,340 L450,305 Z"/>
+
+    <!-- 34: Kalasin -->
+    <path class="province" data-id="34" data-name-thai="กาฬสินธุ์" data-name-english="Kalasin" data-region="Northeastern"
+          d="M520,275 L535,285 L545,300 L555,325 L545,350 L520,355 L510,350 L530,320 Z"/>
+
+    <!-- 37: Mukdahan -->
+    <path class="province" data-id="37" data-name-thai="มุกดาหาร" data-name-english="Mukdahan" data-region="Northeastern"
+          d="M555,325 L575,330 L580,360 L565,385 L545,380 L540,355 L545,350 Z"/>
+
+    <!-- 25: Chaiyaphum -->
+    <path class="province" data-id="25" data-name-thai="ชัยภูมิ" data-name-english="Chaiyaphum" data-region="Northeastern"
+          d="M390,300 L420,310 L450,305 L455,340 L445,375 L420,390 L390,385 L380,355 L390,330 Z"/>
+
+    <!-- 32: Maha Sarakham -->
+    <path class="province" data-id="32" data-name-thai="มหาสารคาม" data-name-english="Maha Sarakham" data-region="Northeastern"
+          d="M480,355 L510,350 L520,355 L515,380 L495,395 L475,390 L470,370 Z"/>
+
+    <!-- 33: Roi Et -->
+    <path class="province" data-id="33" data-name-thai="ร้อยเอ็ด" data-name-english="Roi Et" data-region="Northeastern"
+          d="M510,350 L520,355 L540,355 L545,380 L535,410 L510,420 L490,410 L495,395 L515,380 Z"/>
+
+    <!-- 24: Yasothon -->
+    <path class="province" data-id="24" data-name-thai="ยโสธร" data-name-english="Yasothon" data-region="Northeastern"
+          d="M540,355 L545,380 L565,385 L570,410 L555,430 L535,425 L535,410 Z"/>
+
+    <!-- 26: Amnat Charoen -->
+    <path class="province" data-id="26" data-name-thai="อำนาจเจริญ" data-name-english="Amnat Charoen" data-region="Northeastern"
+          d="M565,385 L580,360 L595,375 L595,410 L580,430 L570,410 Z"/>
+
+    <!-- 19: Nakhon Ratchasima -->
+    <path class="province" data-id="19" data-name-thai="นครราชสีมา" data-name-english="Nakhon Ratchasima" data-region="Northeastern"
+          d="M390,385 L420,390 L445,375 L475,390 L490,410 L480,445 L450,465 L410,460 L385,440 L380,410 Z"/>
+
+    <!-- 20: Buriram -->
+    <path class="province" data-id="20" data-name-thai="บุรีรัมย์" data-name-english="Buriram" data-region="Northeastern"
+          d="M475,390 L495,395 L510,420 L535,425 L540,455 L520,480 L490,475 L465,455 L480,445 Z"/>
+
+    <!-- 21: Surin -->
+    <path class="province" data-id="21" data-name-thai="สุรินทร์" data-name-english="Surin" data-region="Northeastern"
+          d="M520,480 L540,455 L535,425 L555,430 L575,445 L575,480 L555,500 L530,495 Z"/>
+
+    <!-- 22: Sisaket -->
+    <path class="province" data-id="22" data-name-thai="ศรีสะเกษ" data-name-english="Sisaket" data-region="Northeastern"
+          d="M555,430 L570,410 L580,430 L595,445 L595,480 L575,500 L555,500 L575,480 L575,445 Z"/>
+
+    <!-- 23: Ubon Ratchathani -->
+    <path class="province" data-id="23" data-name-thai="อุบลราชธานี" data-name-english="Ubon Ratchathani" data-region="Northeastern"
+          d="M575,445 L595,410 L610,425 L615,465 L600,500 L575,510 L575,500 L595,480 L595,445 Z"/>
+
+    <!-- 57: Suphan Buri -->
+    <path class="province" data-id="57" data-name-thai="สุพรรณบุรี" data-name-english="Suphan Buri" data-region="Central"
+          d="M265,405 L280,380 L305,405 L310,435 L295,460 L265,455 L250,435 L255,415 Z"/>
+
+    <!-- 9: Chainat -->
+    <path class="province" data-id="9" data-name-thai="ชัยนาท" data-name-english="Chainat" data-region="Central"
+          d="M305,405 L340,410 L345,435 L330,455 L310,450 L310,435 Z"/>
+
+    <!-- 8: Singburi -->
+    <path class="province" data-id="8" data-name-thai="สิงห์บุรี" data-name-english="Singburi" data-region="Central"
+          d="M340,410 L365,395 L375,415 L370,440 L355,450 L345,435 Z"/>
+
+    <!-- 7: Lopburi -->
+    <path class="province" data-id="7" data-name-thai="ลพบุรี" data-name-english="Lopburi" data-region="Central"
+          d="M365,395 L375,360 L390,385 L410,400 L400,435 L380,450 L370,440 L375,415 Z"/>
+
+    <!-- 10: Saraburi -->
+    <path class="province" data-id="10" data-name-thai="สระบุรี" data-name-english="Saraburi" data-region="Central"
+          d="M380,450 L400,435 L410,460 L405,490 L385,495 L370,480 Z"/>
+
+    <!-- 6: Ang Thong -->
+    <path class="province" data-id="6" data-name-thai="อ่างทอง" data-name-english="Ang Thong" data-region="Central"
+          d="M330,455 L345,435 L355,450 L360,470 L345,480 L330,475 Z"/>
+
+    <!-- 5: Phra Nakhon Si Ayutthaya -->
+    <path class="province" data-id="5" data-name-thai="พระนครศรีอยุธยา" data-name-english="Phra Nakhon Si Ayutthaya" data-region="Central"
+          d="M345,480 L360,470 L370,480 L385,495 L375,520 L350,525 L340,505 Z"/>
+
+    <!-- 17: Nakhon Nayok -->
+    <path class="province" data-id="17" data-name-thai="นครนายก" data-name-english="Nakhon Nayok" data-region="Central"
+          d="M405,490 L420,475 L440,485 L445,510 L430,525 L410,520 Z"/>
+
+    <!-- 16: Prachinburi -->
+    <path class="province" data-id="16" data-name-thai="ปราจีนบุรี" data-name-english="Prachinburi" data-region="Eastern"
+          d="M420,475 L450,465 L480,480 L485,515 L465,540 L445,535 L445,510 L440,485 Z"/>
+
+    <!-- 18: Sa Kaeo -->
+    <path class="province" data-id="18" data-name-thai="สระแก้ว" data-name-english="Sa Kaeo" data-region="Eastern"
+          d="M480,480 L490,475 L520,480 L530,510 L520,545 L490,555 L465,540 L485,515 Z"/>
+
+    <!-- 4: Pathum Thani -->
+    <path class="province" data-id="4" data-name-thai="ปทุมธานี" data-name-english="Pathum Thani" data-region="Central"
+          d="M350,525 L375,520 L390,535 L385,555 L365,560 L350,550 Z"/>
+
+    <!-- 3: Nonthaburi -->
+    <path class="province" data-id="3" data-name-thai="นนทบุรี" data-name-english="Nonthaburi" data-region="Central"
+          d="M330,540 L350,525 L350,550 L345,565 L325,565 L320,550 Z"/>
+
+    <!-- 1: Bangkok -->
+    <path class="province" data-id="1" data-name-thai="กรุงเทพมหานคร" data-name-english="Bangkok" data-region="Central"
+          d="M345,565 L365,560 L385,565 L395,585 L385,605 L360,610 L340,600 L335,580 Z"/>
+
+    <!-- 58: Nakhon Pathom -->
+    <path class="province" data-id="58" data-name-thai="นครปฐม" data-name-english="Nakhon Pathom" data-region="Central"
+          d="M295,460 L310,450 L330,455 L330,475 L340,505 L325,530 L300,525 L285,500 L290,475 Z"/>
+
+    <!-- 55: Ratchaburi -->
+    <path class="province" data-id="55" data-name-thai="ราชบุรี" data-name-english="Ratchaburi" data-region="Western"
+          d="M235,450 L265,455 L285,500 L280,540 L255,560 L230,550 L220,510 Z"/>
+
+    <!-- 59: Samut Sakhon -->
+    <path class="province" data-id="59" data-name-thai="สมุทรสาคร" data-name-english="Samut Sakhon" data-region="Central"
+          d="M300,525 L325,530 L330,560 L320,585 L295,580 L290,555 Z"/>
+
+    <!-- 60: Samut Songkhram -->
+    <path class="province" data-id="60" data-name-thai="สมุทรสงคราม" data-name-english="Samut Songkhram" data-region="Central"
+          d="M280,540 L300,525 L290,555 L295,580 L280,590 L265,575 L270,555 Z"/>
+
+    <!-- 2: Samut Prakan -->
+    <path class="province" data-id="2" data-name-thai="สมุทรปราการ" data-name-english="Samut Prakan" data-region="Central"
+          d="M385,605 L395,585 L415,590 L430,610 L420,630 L395,630 L385,615 Z"/>
+
+    <!-- 15: Chachoengsao -->
+    <path class="province" data-id="15" data-name-thai="ฉะเชิงเทรา" data-name-english="Chachoengsao" data-region="Eastern"
+          d="M410,520 L430,525 L445,535 L455,565 L445,595 L420,600 L415,590 L395,585 L400,555 Z"/>
+
+    <!-- 11: Chonburi -->
+    <path class="province" data-id="11" data-name-thai="ชลบุรี" data-name-english="Chonburi" data-region="Eastern"
+          d="M420,600 L445,595 L460,620 L465,660 L450,695 L425,690 L415,650 L420,630 L430,610 Z"/>
+
+    <!-- 12: Rayong -->
+    <path class="province" data-id="12" data-name-thai="ระยอง" data-name-english="Rayong" data-region="Eastern"
+          d="M450,695 L465,660 L490,665 L510,685 L505,715 L475,720 L455,710 Z"/>
+
+    <!-- 13: Chanthaburi -->
+    <path class="province" data-id="13" data-name-thai="จันทบุรี" data-name-english="Chanthaburi" data-region="Eastern"
+          d="M490,555 L520,545 L545,570 L545,615 L530,650 L510,685 L490,665 L465,620 L455,590 L465,565 Z"/>
+
+    <!-- 14: Trat -->
+    <path class="province" data-id="14" data-name-thai="ตราด" data-name-english="Trat" data-region="Eastern"
+          d="M545,615 L565,600 L580,620 L575,665 L555,695 L530,690 L530,650 Z"/>
+
+    <!-- 61: Phetchaburi -->
+    <path class="province" data-id="61" data-name-thai="เพชรบุรี" data-name-english="Phetchaburi" data-region="Western"
+          d="M220,510 L255,560 L270,555 L265,575 L280,590 L275,625 L255,660 L225,655 L210,610 L205,560 Z"/>
+
+    <!-- 62: Prachuap Khiri Khan -->
+    <path class="province" data-id="62" data-name-thai="ประจวบคีรีขันธ์" data-name-english="Prachuap Khiri Khan" data-region="Western"
+          d="M225,655 L255,660 L265,700 L260,750 L250,800 L230,815 L210,790 L200,730 L205,680 Z"/>
+
+    <!-- 69: Chumphon -->
+    <path class="province" data-id="69" data-name-thai="ชุมพร" data-name-english="Chumphon" data-region="Southern"
+          d="M230,815 L250,800 L265,820 L270,860 L255,895 L230,900 L210,875 L205,840 Z"/>
+
+    <!-- 68: Ranong -->
+    <path class="province" data-id="68" data-name-thai="ระนอง" data-name-english="Ranong" data-region="Southern"
+          d="M180,850 L205,840 L210,875 L215,915 L200,945 L175,940 L165,905 L170,870 Z"/>
+
+    <!-- 67: Surat Thani -->
+    <path class="province" data-id="67" data-name-thai="สุราษฎร์ธานี" data-name-english="Surat Thani" data-region="Southern"
+          d="M215,915 L230,900 L255,895 L290,910 L310,940 L305,985 L275,1005 L240,995 L220,960 Z"/>
+
+    <!-- 65: Phang Nga -->
+    <path class="province" data-id="65" data-name-thai="พังงา" data-name-english="Phang Nga" data-region="Southern"
+          d="M175,940 L200,945 L220,960 L225,1000 L210,1035 L185,1030 L170,1000 L165,965 Z"/>
+
+    <!-- 66: Phuket -->
+    <path class="province" data-id="66" data-name-thai="ภูเก็ต" data-name-english="Phuket" data-region="Southern"
+          d="M160,1045 L180,1040 L190,1060 L185,1085 L165,1095 L150,1080 L150,1060 Z"/>
+
+    <!-- 64: Krabi -->
+    <path class="province" data-id="64" data-name-thai="กระบี่" data-name-english="Krabi" data-region="Southern"
+          d="M210,1035 L240,1020 L265,1040 L260,1080 L235,1095 L210,1085 L205,1055 Z"/>
+
+    <!-- 63: Nakhon Si Thammarat -->
+    <path class="province" data-id="63" data-name-thai="นครศรีธรรมราช" data-name-english="Nakhon Si Thammarat" data-region="Southern"
+          d="M275,1005 L305,985 L335,1000 L350,1040 L340,1085 L305,1105 L270,1095 L260,1055 L265,1025 Z"/>
+
+    <!-- 72: Trang -->
+    <path class="province" data-id="72" data-name-thai="ตรัง" data-name-english="Trang" data-region="Southern"
+          d="M235,1095 L260,1080 L270,1095 L275,1130 L255,1155 L230,1150 L220,1120 Z"/>
+
+    <!-- 73: Phatthalung -->
+    <path class="province" data-id="73" data-name-thai="พัทลุง" data-name-english="Phatthalung" data-region="Southern"
+          d="M275,1130 L305,1105 L325,1120 L330,1155 L310,1175 L285,1170 Z"/>
+
+    <!-- 70: Songkhla -->
+    <path class="province" data-id="70" data-name-thai="สงขลา" data-name-english="Songkhla" data-region="Southern"
+          d="M310,1175 L330,1155 L355,1165 L370,1200 L365,1240 L340,1260 L310,1250 L300,1215 Z"/>
+
+    <!-- 71: Satun -->
+    <path class="province" data-id="71" data-name-thai="สตูล" data-name-english="Satun" data-region="Southern"
+          d="M230,1150 L255,1155 L275,1170 L285,1205 L270,1235 L240,1240 L220,1215 L215,1180 Z"/>
+
+    <!-- 74: Pattani -->
+    <path class="province" data-id="74" data-name-thai="ปัตตานี" data-name-english="Pattani" data-region="Southern"
+          d="M340,1260 L365,1240 L385,1255 L390,1285 L370,1305 L345,1300 L335,1275 Z"/>
+
+    <!-- 75: Yala -->
+    <path class="province" data-id="75" data-name-thai="ยะลา" data-name-english="Yala" data-region="Southern"
+          d="M285,1205 L310,1250 L335,1275 L345,1300 L330,1330 L295,1335 L270,1310 L265,1270 L270,1235 Z"/>
+
+    <!-- 76: Narathiwat -->
+    <path class="province" data-id="76" data-name-thai="นราธิวาส" data-name-english="Narathiwat" data-region="Southern"
+          d="M345,1300 L370,1305 L395,1325 L400,1365 L380,1395 L350,1390 L330,1360 L330,1330 Z"/>
+  </g>
+</svg>

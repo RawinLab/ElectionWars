@@ -1,0 +1,109 @@
+/* Thailand Map Styles */
+
+/* Map container styles */
+.map-wrapper {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.thailand-map {
+  width: 100%;
+  height: auto;
+}
+
+.thailand-map svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Province styling */
+.province {
+  fill: var(--color-neutral, #E0E0E0);
+  stroke: white;
+  stroke-width: 1;
+  cursor: pointer;
+  transition: fill 0.3s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+.province:hover {
+  filter: brightness(1.1);
+}
+
+.province.clicked {
+  animation: pulse 0.2s ease-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Click feedback floating number */
+.click-number {
+  position: fixed;
+  font-size: 18px;
+  font-weight: bold;
+  pointer-events: none;
+  animation: float-up 0.6s ease-out forwards;
+  z-index: 100;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+.click-number.defend {
+  color: #4CAF50;  /* Green for +1 shield */
+}
+
+.click-number.attack {
+  color: #F44336;  /* Red for -1 shield */
+}
+
+.click-number.capture {
+  color: #FF9800;  /* Orange for capture */
+  font-size: 24px;
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-40px) scale(1.2);
+  }
+}
+
+/* Capture animation */
+.province.captured {
+  animation: capture-pulse 0.5s ease-out;
+}
+
+@keyframes capture-pulse {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.5) drop-shadow(0 0 10px currentColor); }
+  100% { filter: brightness(1); }
+}
+
+/* Loading state */
+.map-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--color-text-secondary);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .map-wrapper {
+    max-width: 100%;
+    padding: 0 var(--spacing-sm);
+  }
+
+  .click-number {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "menu": {
+    "joinGame": "เข้าร่วมเกม",
+    "settings": "ตั้งค่า",
+    "changeParty": "เปลี่ยนพรรค"
+  },
+  "game": {
+    "timer": {
+      "days": "วัน",
+      "hours": "ชั่วโมง",
+      "minutes": "นาที",
+      "seconds": "วินาที",
+      "ended": "เกมจบแล้ว!"
+    },
+    "leaderboard": {
+      "title": "อันดับพรรค",
+      "party": "พรรค",
+      "provinces": "จังหวัด",
+      "clicks": "คลิก"
+    },
+    "stats": {
+      "totalPlayers": "ผู้เล่นทั้งหมด",
+      "totalClicks": "คลิกทั้งหมด"
+    }
+  },
+  "settings": {
+    "language": "ภาษา",
+    "sound": "เสียง",
+    "on": "เปิด",
+    "off": "ปิด"
+  },
+  "toast": {
+    "provinceFlip": "{party} ยึด {province} แล้ว!",
+    "partyWin": "พรรคของคุณยึด {province} ได้!",
+    "shieldWarning": "เกราะ {province} เหลือน้อย!"
+  },
+  "party": {
+    "selectTitle": "เลือกพรรคของคุณ",
+    "nickname": "ชื่อเล่น"
+  }
+}

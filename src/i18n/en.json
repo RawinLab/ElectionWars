@@ -1,0 +1,41 @@
+{
+  "menu": {
+    "joinGame": "Join Game",
+    "settings": "Settings",
+    "changeParty": "Change Party"
+  },
+  "game": {
+    "timer": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Min",
+      "seconds": "Sec",
+      "ended": "Game Ended!"
+    },
+    "leaderboard": {
+      "title": "Party Rankings",
+      "party": "Party",
+      "provinces": "Provinces",
+      "clicks": "Clicks"
+    },
+    "stats": {
+      "totalPlayers": "Total Players",
+      "totalClicks": "Total Clicks"
+    }
+  },
+  "settings": {
+    "language": "Language",
+    "sound": "Sound",
+    "on": "On",
+    "off": "Off"
+  },
+  "toast": {
+    "provinceFlip": "{party} captured {province}!",
+    "partyWin": "Your party captured {province}!",
+    "shieldWarning": "{province} shield is low!"
+  },
+  "party": {
+    "selectTitle": "Choose Your Party",
+    "nickname": "Nickname"
+  }
+}

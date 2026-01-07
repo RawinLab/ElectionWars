@@ -12,22 +12,22 @@
 > As a player, I want to see province changes in real-time as other players click
 
 ### Acceptance Criteria
-- [ ] Subscribe to province_state table updates
-- [ ] Subscribe to game_state table updates
-- [ ] Handle connection status (connected/disconnected)
-- [ ] Auto-reconnect on connection loss
-- [ ] Emit events for province and game state changes
+- [x] Subscribe to province_state table updates
+- [x] Subscribe to game_state table updates
+- [x] Handle connection status (connected/disconnected)
+- [x] Auto-reconnect on connection loss
+- [x] Emit events for province and game state changes
 
 ### Tasks
-- [ ] T159 P1 US-028 Create RealtimeManager class [agent: multi-platform-apps:backend-architect] [deps: T005] [files: src/lib/realtime.js]
-- [ ] T160 P1 US-028 Implement subscribe() for province_state channel [agent: multi-platform-apps:backend-architect] [deps: T159, T032] [files: src/lib/realtime.js]
-- [ ] T161 P1 US-028 Implement subscribe() for game_state channel [agent: multi-platform-apps:backend-architect] [deps: T159, T040] [files: src/lib/realtime.js]
-- [ ] T162 P2 US-028 Add connection status tracking [agent: multi-platform-apps:backend-architect] [deps: T160] [files: src/lib/realtime.js]
-- [ ] T163 P2 US-028 Implement auto-reconnect logic [agent: multi-platform-apps:backend-architect] [deps: T162] [files: src/lib/realtime.js]
-- [ ] T164 P2 US-028 Create event emitter for callbacks [agent: multi-platform-apps:backend-architect] [deps: T159] [files: src/lib/realtime.js]
+- [x] T159 P1 US-028 Create RealtimeManager class [agent: multi-platform-apps:backend-architect] [deps: T005] [files: src/lib/realtime.js]
+- [x] T160 P1 US-028 Implement subscribe() for province_state channel [agent: multi-platform-apps:backend-architect] [deps: T159, T032] [files: src/lib/realtime.js]
+- [x] T161 P1 US-028 Implement subscribe() for game_state channel [agent: multi-platform-apps:backend-architect] [deps: T159, T040] [files: src/lib/realtime.js]
+- [x] T162 P2 US-028 Add connection status tracking [agent: multi-platform-apps:backend-architect] [deps: T160] [files: src/lib/realtime.js]
+- [x] T163 P2 US-028 Implement auto-reconnect logic [agent: multi-platform-apps:backend-architect] [deps: T162] [files: src/lib/realtime.js]
+- [x] T164 P2 US-028 Create event emitter for callbacks [agent: multi-platform-apps:backend-architect] [deps: T159] [files: src/lib/realtime.js]
 - [ ] T165 P3 US-028 Test realtime updates trigger callbacks [agent: full-stack-orchestration:test-automator] [deps: T164] [files: tests/integration/realtime.test.js]
 
-### Story Progress: 0/7
+### Story Progress: 6/7
 
 ---
 
@@ -35,22 +35,22 @@
 > As a player, I want to see which parties are winning by provinces controlled
 
 ### Acceptance Criteria
-- [ ] Shows all parties ranked by provinces controlled
-- [ ] Displays provinces controlled count and total clicks
-- [ ] Updates in real-time as provinces change hands
-- [ ] Shows party colors and Thai names
-- [ ] Responsive design for mobile and desktop
+- [x] Shows all parties ranked by provinces controlled
+- [x] Displays provinces controlled count and total clicks
+- [x] Updates in real-time as provinces change hands
+- [x] Shows party colors and Thai names
+- [x] Responsive design for mobile and desktop
 
 ### Tasks
-- [ ] T166 P1 US-029 Create Leaderboard class component [agent: multi-platform-apps:frontend-developer] [deps: none] [files: src/components/Leaderboard.js]
-- [ ] T167 P1 US-029 Implement fetch() using get_leaderboard RPC [agent: multi-platform-apps:backend-architect] [deps: T166, T067] [files: src/components/Leaderboard.js]
-- [ ] T168 P2 US-029 Create render() with party rankings table [agent: multi-platform-apps:frontend-developer] [deps: T167] [files: src/components/Leaderboard.js]
-- [ ] T169 P2 US-029 Add formatNumber() helper for K/M formatting [agent: multi-platform-apps:frontend-developer] [deps: T166] [files: src/components/Leaderboard.js]
-- [ ] T170 P2 US-029 Connect to realtime updates for auto-refresh [agent: multi-platform-apps:backend-architect] [deps: T168, T161] [files: src/components/Leaderboard.js]
-- [ ] T171 P2 US-029 Add CSS styling for leaderboard table [agent: multi-platform-apps:frontend-developer] [deps: T168] [files: src/styles/components.css]
+- [x] T166 P1 US-029 Create Leaderboard class component [agent: multi-platform-apps:frontend-developer] [deps: none] [files: src/components/Leaderboard.js]
+- [x] T167 P1 US-029 Implement fetch() using get_leaderboard RPC [agent: multi-platform-apps:backend-architect] [deps: T166, T067] [files: src/components/Leaderboard.js]
+- [x] T168 P2 US-029 Create render() with party rankings table [agent: multi-platform-apps:frontend-developer] [deps: T167] [files: src/components/Leaderboard.js]
+- [x] T169 P2 US-029 Add formatNumber() helper for K/M formatting [agent: multi-platform-apps:frontend-developer] [deps: T166] [files: src/components/Leaderboard.js]
+- [x] T170 P2 US-029 Connect to realtime updates for auto-refresh [agent: multi-platform-apps:backend-architect] [deps: T168, T161] [files: src/components/Leaderboard.js]
+- [x] T171 P2 US-029 Add CSS styling for leaderboard table [agent: multi-platform-apps:frontend-developer] [deps: T168] [files: src/styles/components.css]
 - [ ] T172 P3 US-029 Test leaderboard displays correct rankings [agent: full-stack-orchestration:test-automator] [deps: T168] [files: tests/e2e/leaderboard.spec.js]
 
-### Story Progress: 0/7
+### Story Progress: 6/7
 
 ---
 
@@ -58,20 +58,20 @@
 > As a player, I want to see how much time is left until the game ends (Feb 8, 2026)
 
 ### Acceptance Criteria
-- [ ] Displays countdown in days, hours, minutes, seconds
-- [ ] Updates every second
-- [ ] Shows "Game Ended" when time expires
-- [ ] Uses Bangkok timezone (UTC+7)
-- [ ] Responsive design
+- [x] Displays countdown in days, hours, minutes, seconds
+- [x] Updates every second
+- [x] Shows "Game Ended" when time expires
+- [x] Uses Bangkok timezone (UTC+7)
+- [x] Responsive design
 
 ### Tasks
-- [ ] T173 P1 US-030 Create GameTimer class component [agent: multi-platform-apps:frontend-developer] [deps: none] [files: src/components/Timer.js]
-- [ ] T174 P2 US-030 Implement countdown calculation logic [agent: multi-platform-apps:frontend-developer] [deps: T173] [files: src/components/Timer.js]
-- [ ] T175 P2 US-030 Update timer display every second [agent: multi-platform-apps:frontend-developer] [deps: T174] [files: src/components/Timer.js]
-- [ ] T176 P2 US-030 Show "Game Ended" when expired [agent: multi-platform-apps:frontend-developer] [deps: T174] [files: src/components/Timer.js]
-- [ ] T177 P3 US-030 Add CSS styling for timer display [agent: multi-platform-apps:frontend-developer] [deps: T173] [files: src/styles/components.css]
+- [x] T173 P1 US-030 Create GameTimer class component [agent: multi-platform-apps:frontend-developer] [deps: none] [files: src/components/Timer.js]
+- [x] T174 P2 US-030 Implement countdown calculation logic [agent: multi-platform-apps:frontend-developer] [deps: T173] [files: src/components/Timer.js]
+- [x] T175 P2 US-030 Update timer display every second [agent: multi-platform-apps:frontend-developer] [deps: T174] [files: src/components/Timer.js]
+- [x] T176 P2 US-030 Show "Game Ended" when expired [agent: multi-platform-apps:frontend-developer] [deps: T174] [files: src/components/Timer.js]
+- [x] T177 P3 US-030 Add CSS styling for timer display [agent: multi-platform-apps:frontend-developer] [deps: T173] [files: src/styles/components.css]
 
-### Story Progress: 0/5
+### Story Progress: 5/5
 
 ---
 
@@ -79,19 +79,19 @@
 > As a player, I want to see total clicks and total players in the game
 
 ### Acceptance Criteria
-- [ ] Displays total clicks counter
-- [ ] Displays total players counter
-- [ ] Updates in real-time from game_state table
-- [ ] Formatted with K/M suffixes for large numbers
-- [ ] Animated counter increments
+- [x] Displays total clicks counter
+- [x] Displays total players counter
+- [x] Updates in real-time from game_state table
+- [x] Formatted with K/M suffixes for large numbers
+- [x] Animated counter increments
 
 ### Tasks
-- [ ] T178 P2 US-031 Create GlobalStats component [agent: multi-platform-apps:frontend-developer] [deps: T095] [files: src/components/GlobalStats.js]
-- [ ] T179 P2 US-031 Fetch game_state data [agent: multi-platform-apps:backend-architect] [deps: T178] [files: src/components/GlobalStats.js]
-- [ ] T180 P2 US-031 Subscribe to game_state realtime updates [agent: multi-platform-apps:backend-architect] [deps: T179, T161] [files: src/components/GlobalStats.js]
-- [ ] T181 P3 US-031 Add animated counter effect [agent: multi-platform-apps:frontend-developer] [deps: T180] [files: src/components/GlobalStats.js]
+- [x] T178 P2 US-031 Create GlobalStats component [agent: multi-platform-apps:frontend-developer] [deps: T095] [files: src/components/GlobalStats.js]
+- [x] T179 P2 US-031 Fetch game_state data [agent: multi-platform-apps:backend-architect] [deps: T178] [files: src/components/GlobalStats.js]
+- [x] T180 P2 US-031 Subscribe to game_state realtime updates [agent: multi-platform-apps:backend-architect] [deps: T179, T161] [files: src/components/GlobalStats.js]
+- [x] T181 P3 US-031 Add animated counter effect [agent: multi-platform-apps:frontend-developer] [deps: T180] [files: src/components/GlobalStats.js]
 
-### Story Progress: 0/4
+### Story Progress: 4/4
 
 ---
 
@@ -99,18 +99,18 @@
 > As a player, I want to know if I'm connected to the real-time server
 
 ### Acceptance Criteria
-- [ ] Shows green dot when connected
-- [ ] Shows red dot when disconnected
-- [ ] Shows "Reconnecting..." message during reconnection
-- [ ] Auto-hides when connection is stable
-- [ ] Positioned in corner of screen
+- [x] Shows green dot when connected
+- [x] Shows red dot when disconnected
+- [x] Shows "Reconnecting..." message during reconnection
+- [x] Auto-hides when connection is stable
+- [x] Positioned in corner of screen
 
 ### Tasks
-- [ ] T182 P2 US-032 Create ConnectionStatus component [agent: multi-platform-apps:frontend-developer] [deps: T162] [files: src/components/ConnectionStatus.js]
-- [ ] T183 P2 US-032 Listen to connection status from RealtimeManager [agent: multi-platform-apps:backend-architect] [deps: T182, T162] [files: src/components/ConnectionStatus.js]
-- [ ] T184 P3 US-032 Add CSS for connection indicator [agent: multi-platform-apps:frontend-developer] [deps: T182] [files: src/styles/components.css]
+- [x] T182 P2 US-032 Create ConnectionStatus component [agent: multi-platform-apps:frontend-developer] [deps: T162] [files: src/components/ConnectionStatus.js]
+- [x] T183 P2 US-032 Listen to connection status from RealtimeManager [agent: multi-platform-apps:backend-architect] [deps: T182, T162] [files: src/components/ConnectionStatus.js]
+- [x] T184 P3 US-032 Add CSS for connection indicator [agent: multi-platform-apps:frontend-developer] [deps: T182] [files: src/styles/components.css]
 
-### Story Progress: 0/3
+### Story Progress: 3/3
 
 ---
 
@@ -166,17 +166,32 @@
 
 ## Progress Summary
 - Total Tasks: 26
-- Completed: 0
+- Completed: 24
 - In Progress: 0
-- Pending: 26
+- Pending: 2 (tests)
 
-**Status: Ready to Start**
+**Status: MOSTLY COMPLETE**
 
-**Key Features:**
+## Files Created/Modified
+- `src/lib/realtime.js` - RealtimeManager with Supabase subscriptions
+- `src/components/Leaderboard.js` - Leaderboard component with fetch/render
+- `src/components/Timer.js` - GameTimer countdown component
+- `src/components/GlobalStats.js` - Global stats with animated counters
+- `src/components/ConnectionStatus.js` - Connection status indicator
+- `src/styles/components.css` - CSS for all new components
+- `src/main.js` - Integrated all components with initialization
+
+**Key Features Implemented:**
 - Real-time province and game state synchronization
-- Auto-updating party leaderboard
+- Auto-updating party leaderboard with get_leaderboard RPC
 - Game countdown timer (ends Feb 8, 2026 23:59 ICT)
-- Live global statistics (total clicks, total players)
-- Connection status with auto-reconnect
+- Live global statistics (total clicks, total players) with K/M formatting
+- Connection status with auto-reconnect and exponential backoff
+- Animated counter increments for stats
+- Game end handling with winner announcement
 
-Last Updated: 2026-01-07
+**Remaining (P3 tests):**
+- T165: Integration test for realtime callbacks
+- T172: E2E test for leaderboard rankings
+
+Last Updated: 2026-01-08
