@@ -12,10 +12,10 @@
 > As a developer, I need to set up a Supabase project so that I can use it as the backend for the game
 
 ### Acceptance Criteria
-- [ ] Supabase project created in Singapore region (closest to Thailand)
-- [ ] Anonymous authentication is enabled
-- [ ] Project URL and anon key are available
-- [ ] Can connect from browser
+- [x] Supabase project created in Singapore region (closest to Thailand)
+- [x] Anonymous authentication is enabled
+- [x] Project URL and anon key are available
+- [x] Can connect from browser
 
 ### Tasks
 - [x] T001 P1 US-001 Create Supabase project at supabase.com [agent: manual] [deps: none] [files: N/A]
@@ -32,10 +32,10 @@
 > As a developer, I need to configure Firebase Hosting so that I can deploy the application
 
 ### Acceptance Criteria
-- [ ] Firebase project created
-- [ ] Firebase Hosting enabled
-- [ ] Firebase CLI configured
-- [ ] Can deploy to Firebase Hosting
+- [x] Firebase project created
+- [x] Firebase Hosting enabled
+- [x] Firebase CLI configured
+- [x] Can deploy to Firebase Hosting
 
 ### Tasks
 - [x] T006 P1 US-002 Create Firebase project at console.firebase.google.com [agent: manual] [deps: none] [files: N/A]
@@ -52,11 +52,11 @@
 > As a developer, I need a Vite frontend project so that I can build the game UI
 
 ### Acceptance Criteria
-- [ ] Vite project initialized with vanilla JS template
-- [ ] Dependencies installed (@supabase/supabase-js, firebase-tools)
-- [ ] Project structure created as per specification
-- [ ] Environment variables configured
-- [ ] Build and dev server work correctly
+- [x] Vite project initialized with vanilla JS template
+- [x] Dependencies installed (@supabase/supabase-js, firebase-tools)
+- [x] Project structure created as per specification
+- [x] Environment variables configured
+- [x] Build and dev server work correctly
 
 ### Tasks
 - [x] T011 P1 US-003 Initialize Vite project with vanilla template [agent: multi-platform-apps:frontend-developer] [deps: none] [files: package.json, vite.config.js, index.html]

@@ -80,7 +80,7 @@
 - [x] Vite build produces optimized production bundle
 - [x] Environment variables configured correctly
 - [x] Firebase hosting deployed successfully
-- [ ] Custom domain configured (if applicable)
+- [x] Custom domain configured (if applicable) - SKIPPED, using Firebase default
 - [x] HTTPS enabled
 - [x] Cache headers set for static assets
 
@@ -104,7 +104,7 @@
 - [x] Unit tests run automatically
 - [x] E2E tests run automatically
 - [x] Successful builds deploy to Firebase
-- [ ] Build status badge in README
+- [x] Build status badge in README
 - [x] Fail fast on test failures
 
 ### Tasks
