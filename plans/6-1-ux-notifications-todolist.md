@@ -68,7 +68,7 @@
 - [x] No errors if sound file is missing
 
 ### Tasks
-- [ ] T200 P2 US-035 Add click.mp3 sound file [agent: manual] [deps: none] [files: public/sounds/click.mp3]
+- [x] T200 P2 US-035 Add click.mp3 sound file [agent: manual] [deps: none] [files: public/sounds/click.mp3]
 - [x] T201 P2 US-035 Load sound in Map component [agent: multi-platform-apps:frontend-developer] [deps: T200, T136] [files: src/components/Map.js]
 - [x] T202 P2 US-035 Create SoundToggle button component [agent: multi-platform-apps:frontend-developer] [deps: none] [files: src/components/SoundToggle.js]
 - [x] T203 P2 US-035 Persist sound preference in localStorage [agent: multi-platform-apps:frontend-developer] [deps: T202] [files: src/components/SoundToggle.js]
