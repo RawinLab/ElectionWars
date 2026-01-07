@@ -79,7 +79,7 @@
 ### Acceptance Criteria
 - [x] Vite build produces optimized production bundle
 - [x] Environment variables configured correctly
-- [ ] Firebase hosting deployed successfully
+- [x] Firebase hosting deployed successfully
 - [ ] Custom domain configured (if applicable)
 - [x] HTTPS enabled
 - [x] Cache headers set for static assets
@@ -88,11 +88,11 @@
 - [x] T226 P1 US-040 Configure firebase.json with hosting rules [agent: full-stack-orchestration:deployment-engineer] [deps: none] [files: firebase.json]
 - [x] T227 P1 US-040 Set up production environment variables [agent: full-stack-orchestration:deployment-engineer] [deps: T003] [files: .env.production]
 - [x] T228 P2 US-040 Run vite build to create production bundle [agent: full-stack-orchestration:deployment-engineer] [deps: T227] [files: dist/]
-- [ ] T229 P2 US-040 Deploy to Firebase with firebase deploy [agent: full-stack-orchestration:deployment-engineer] [deps: T228] [files: N/A]
-- [ ] T230 P3 US-040 Verify deployment is accessible via HTTPS [agent: full-stack-orchestration:deployment-engineer] [deps: T229] [files: N/A]
+- [x] T229 P2 US-040 Deploy to Firebase with firebase deploy [agent: full-stack-orchestration:deployment-engineer] [deps: T228] [files: N/A]
+- [x] T230 P3 US-040 Verify deployment is accessible via HTTPS [agent: full-stack-orchestration:deployment-engineer] [deps: T229] [files: N/A]
 - [ ] T231 P3 US-040 Configure custom domain (if applicable) [agent: full-stack-orchestration:deployment-engineer] [deps: T230] [files: firebase.json]
 
-### Story Progress: 3/6
+### Story Progress: 5/6
 
 ---
 
@@ -176,11 +176,13 @@
 
 ## Progress Summary
 - Total Tasks: 28
-- Completed: 25
+- Completed: 27
 - In Progress: 0
-- Pending: 3 (T229, T230, T231 - Firebase deployment manual steps)
+- Pending: 1 (T231 - Custom domain configuration, optional)
 
-**Status: MOSTLY COMPLETE** (Pending: Firebase deployment verification)
+**Status: COMPLETE** ✅
+
+**Deployment URL:** https://electionwars-1c06c.web.app
 
 ## Files Created/Modified
 - `vitest.config.js` - Vitest test configuration
@@ -208,10 +210,10 @@
 - Production environment configuration
 - Multi-browser E2E testing (chromium, firefox, webkit)
 
-**Remaining (Manual Deployment Steps):**
-- T229: Deploy to Firebase with `firebase deploy`
-- T230: Verify deployment is accessible via HTTPS
-- T231: Configure custom domain (if applicable)
+**Deployment Complete:**
+- ✅ Firebase deployed to https://electionwars-1c06c.web.app
+- ✅ HTTPS verified working (HTTP 200)
+- ⏭️ T231: Custom domain configuration (optional, skipped)
 
 **Note:** Test coverage is at 22.47%. Additional unit tests for components would increase coverage to target 80%.
 
