@@ -1244,7 +1244,8 @@ function updatePlayerInfo() {
 
   const playerParty = document.getElementById('player-party')
   if (playerParty) {
-    playerParty.innerHTML = `<span class="party-badge" style="background: ${party.official_color}"></span> ${party.name_thai}`
+    const partyNumber = party.ballot_number ? `#${party.ballot_number} ` : ''
+    playerParty.innerHTML = `<span class="party-badge" style="background: ${party.official_color}"></span> ${partyNumber}${party.name_thai}`
   }
 
   // Update Your Empire panel - party info with logo
@@ -1281,7 +1282,8 @@ function updatePlayerInfo() {
   }
 
   if (empirePartyName) {
-    empirePartyName.textContent = party.name_thai || party.name_english
+    const partyNumber = party.ballot_number ? `#${party.ballot_number} ` : ''
+    empirePartyName.textContent = `${partyNumber}${party.name_thai || party.name_english}`
     empirePartyName.style.color = party.official_color
     empirePartyName.style.textShadow = `0 0 10px ${party.official_color}`
   }
@@ -1306,11 +1308,12 @@ function updatePlayerInfo() {
   // Update legacy player info element if present
   const playerInfoEl = document.getElementById('player-info')
   if (playerInfoEl) {
+    const legacyPartyNumber = party.ballot_number ? `#${party.ballot_number} ` : ''
     playerInfoEl.innerHTML = `
       <div class="player-badge" style="background: ${party.official_color}"></div>
       <div class="player-details">
         <span class="player-name">${player.nickname}</span>
-        <span class="player-party">${party.name_thai}</span>
+        <span class="player-party">${legacyPartyNumber}${party.name_thai}</span>
       </div>
     `
   }
