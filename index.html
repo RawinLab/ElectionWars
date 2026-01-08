@@ -73,8 +73,26 @@
         </div>
       </div>
 
-      <!-- Party Selector Overlay (shown when no party selected) -->
-      <div id="party-selector-overlay" class="party-selector-modal-overlay">
+      <!-- Welcome Overlay (shown before joining) -->
+      <div id="welcome-overlay" class="welcome-overlay">
+        <div class="welcome-content">
+          <h1 class="logo-text logo-thai-flag">ELECTION69WAR</h1>
+          <p class="welcome-subtitle">เลือกพรรค ยึดครองจังหวัด ชิงชัยประเทศไทย</p>
+          <div class="welcome-buttons">
+            <button id="welcome-join-btn" class="btn btn-primary btn-glow btn-welcome-join">
+              <span class="btn-icon">🎮</span>
+              <span>เข้าร่วมเกม / Join Game</span>
+            </button>
+            <button id="welcome-rules-btn" class="btn btn-secondary btn-welcome-rules">
+              <span class="btn-icon">❓</span>
+              <span>กติกา / Rules</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Party Selector Overlay (shown when joining) -->
+      <div id="party-selector-overlay" class="party-selector-modal-overlay hidden">
         <div class="party-selector-modal-content">
           <button id="close-party-modal-btn" class="btn-close-modal hidden" title="ยกเลิก">✕</button>
           <div class="modal-header">
@@ -151,7 +169,10 @@
           <span class="toggle-arrow">▶</span>
         </button>
         <!-- Connection Status -->
-        <div id="connection-status" class="connection-status-sidebar"></div>
+        <div id="connection-status" class="connection-status-sidebar">
+          <span class="status-indicator disconnected"></span>
+          <span class="status-text">Offline</span>
+        </div>
 
         <div class="overlay-panel">
           <div class="panel-header">

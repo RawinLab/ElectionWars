@@ -50,12 +50,13 @@ async function init() {
     session = await initAuth()
 
     if (session) {
-      // Player already joined - hide party selector overlay
+      // Player already joined - hide welcome and party selector
+      hideWelcomeOverlay()
       hidePartySelectorOverlay()
       await initializeGameComponents()
     } else {
-      // New player - show party selector overlay
-      showPartySelectorOverlay()
+      // New player - show welcome overlay (map visible in background)
+      showWelcomeOverlay()
       // Initialize map in background
       await initializeMap()
     }
@@ -114,7 +115,33 @@ function setupEventListeners() {
   // Close modal button (for change party mode)
   const closeModalBtn = document.getElementById('close-party-modal-btn')
   if (closeModalBtn) {
-    closeModalBtn.addEventListener('click', hidePartySelectorOverlay)
+    closeModalBtn.addEventListener('click', () => {
+      hidePartySelectorOverlay()
+      // Show welcome overlay again if not in change party mode
+      if (!isChangePartyMode) {
+        showWelcomeOverlay()
+      }
+    })
+  }
+
+  // Welcome overlay buttons
+  const welcomeJoinBtn = document.getElementById('welcome-join-btn')
+  const welcomeRulesBtn = document.getElementById('welcome-rules-btn')
+
+  if (welcomeJoinBtn) {
+    welcomeJoinBtn.addEventListener('click', () => {
+      hideWelcomeOverlay()
+      showPartySelectorOverlay()
+    })
+  }
+
+  if (welcomeRulesBtn) {
+    welcomeRulesBtn.addEventListener('click', () => {
+      const rulesModal = document.getElementById('rules-modal')
+      if (rulesModal) {
+        rulesModal.classList.remove('hidden')
+      }
+    })
   }
 
   // Rules modal
@@ -204,6 +231,26 @@ function setupEventListeners() {
         leaderboardModal.classList.add('hidden')
       }
     })
+  }
+}
+
+/**
+ * Show welcome overlay
+ */
+function showWelcomeOverlay() {
+  const overlay = document.getElementById('welcome-overlay')
+  if (overlay) {
+    overlay.classList.remove('hidden')
+  }
+}
+
+/**
+ * Hide welcome overlay
+ */
+function hideWelcomeOverlay() {
+  const overlay = document.getElementById('welcome-overlay')
+  if (overlay) {
+    overlay.classList.add('hidden')
   }
 }
 
