@@ -255,6 +255,53 @@ function hideWelcomeOverlay() {
 }
 
 /**
+ * Show player stats overlay (online count and total players)
+ */
+function showPlayerStatsOverlay() {
+  const overlay = document.getElementById('player-stats-overlay')
+  if (overlay) {
+    overlay.classList.remove('hidden')
+  }
+}
+
+/**
+ * Hide player stats overlay
+ */
+function hidePlayerStatsOverlay() {
+  const overlay = document.getElementById('player-stats-overlay')
+  if (overlay) {
+    overlay.classList.add('hidden')
+  }
+}
+
+/**
+ * Update player stats display
+ * @param {Object} data - { online: number, total: number }
+ */
+function updatePlayerStats(data) {
+  const onlineCount = document.getElementById('online-count')
+  const totalPlayers = document.getElementById('total-players')
+
+  if (onlineCount) {
+    onlineCount.textContent = data.online.toLocaleString()
+  }
+  if (totalPlayers) {
+    totalPlayers.textContent = data.total.toLocaleString()
+  }
+}
+
+/**
+ * Update missiles per minute display
+ * @param {number} missilesPerMinute
+ */
+function updateMissilesPerMinute(missilesPerMinute) {
+  const element = document.getElementById('missiles-per-minute')
+  if (element) {
+    element.textContent = missilesPerMinute.toLocaleString()
+  }
+}
+
+/**
  * Show party selector overlay
  * @param {boolean} changeMode - If true, show in change party mode
  */
@@ -673,6 +720,25 @@ async function initializeGameComponents() {
 
   // Update conquered list
   updateConqueredList()
+
+  // Subscribe to presence for online tracking
+  if (session && session.player) {
+    await realtimeManager.subscribeToPresence({
+      id: session.player.id,
+      nickname: session.player.nickname,
+      party_id: session.player.party_id
+    })
+
+    // Listen for presence changes
+    realtimeManager.onPresenceChange(updatePlayerStats)
+
+    // Start missile tracking and listen for changes
+    realtimeManager.startMissileTracking()
+    realtimeManager.onMissilesChange(updateMissilesPerMinute)
+
+    // Show player stats overlay
+    showPlayerStatsOverlay()
+  }
 
   console.log('🎮 Game components initialized. Session:', session)
 }

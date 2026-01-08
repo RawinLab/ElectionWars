@@ -7,16 +7,26 @@ import { supabase } from './supabase.js'
 export class RealtimeManager {
   constructor() {
     this.channels = []
+    this.presenceChannel = null
+    this.onlineUsers = new Map()
+    this.totalPlayers = 0
     this.callbacks = {
       province: [],
       gameState: [],
-      connection: []
+      connection: [],
+      presence: [],
+      missiles: []
     }
     this.status = 'disconnected'
     this.reconnectAttempts = 0
     this.maxReconnectAttempts = 10
     this.baseReconnectDelay = 1000
     this.reconnectTimeout = null
+
+    // Missiles tracking
+    this.missileEvents = [] // Array of { timestamp, count }
+    this.missilesPerMinute = 0
+    this.missileTrackingInterval = null
   }
 
   /**
@@ -233,6 +243,254 @@ export class RealtimeManager {
       const index = this.callbacks.gameState.indexOf(callback)
       if (index > -1) {
         this.callbacks.gameState.splice(index, 1)
+      }
+    }
+  }
+
+  /**
+   * Subscribe to presence channel for tracking online users
+   * @param {Object} playerInfo - Player info { id, nickname, party_id }
+   */
+  async subscribeToPresence(playerInfo) {
+    if (this.presenceChannel) {
+      return // Already subscribed
+    }
+
+    // Fetch total players count initially
+    await this.fetchTotalPlayers()
+
+    this.presenceChannel = supabase.channel('online-users', {
+      config: {
+        presence: {
+          key: playerInfo.id
+        }
+      }
+    })
+
+    this.presenceChannel
+      .on('presence', { event: 'sync' }, () => {
+        const state = this.presenceChannel.presenceState()
+        this.onlineUsers.clear()
+        Object.keys(state).forEach(key => {
+          const presences = state[key]
+          if (presences && presences.length > 0) {
+            this.onlineUsers.set(key, presences[0])
+          }
+        })
+        this._notifyPresenceChange()
+      })
+      .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+        if (newPresences && newPresences.length > 0) {
+          this.onlineUsers.set(key, newPresences[0])
+        }
+        this._notifyPresenceChange()
+      })
+      .on('presence', { event: 'leave' }, ({ key }) => {
+        this.onlineUsers.delete(key)
+        this._notifyPresenceChange()
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          // Track this user's presence
+          await this.presenceChannel.track({
+            id: playerInfo.id,
+            nickname: playerInfo.nickname,
+            party_id: playerInfo.party_id,
+            online_at: new Date().toISOString()
+          })
+        }
+      })
+  }
+
+  /**
+   * Fetch total players count from database
+   */
+  async fetchTotalPlayers() {
+    try {
+      const { count, error } = await supabase
+        .from('players')
+        .select('*', { count: 'exact', head: true })
+
+      if (!error && count !== null) {
+        this.totalPlayers = count
+        this._notifyPresenceChange()
+      }
+    } catch (err) {
+      console.error('Failed to fetch total players:', err)
+    }
+  }
+
+  /**
+   * Leave presence channel
+   */
+  async leavePresence() {
+    if (this.presenceChannel) {
+      await this.presenceChannel.untrack()
+      supabase.removeChannel(this.presenceChannel)
+      this.presenceChannel = null
+      this.onlineUsers.clear()
+    }
+  }
+
+  /**
+   * Get current online user count
+   * @returns {number}
+   */
+  getOnlineCount() {
+    return this.onlineUsers.size
+  }
+
+  /**
+   * Get total players count
+   * @returns {number}
+   */
+  getTotalPlayers() {
+    return this.totalPlayers
+  }
+
+  /**
+   * Notify presence change listeners
+   * @private
+   */
+  _notifyPresenceChange() {
+    const data = {
+      online: this.onlineUsers.size,
+      total: this.totalPlayers
+    }
+    this.callbacks.presence.forEach(cb => cb(data))
+  }
+
+  /**
+   * Add a presence change listener
+   * @param {Function} callback - Callback to invoke on presence changes
+   * @returns {Function} Unsubscribe function
+   */
+  onPresenceChange(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('Callback must be a function')
+    }
+
+    this.callbacks.presence.push(callback)
+
+    // Immediately call with current data
+    callback({
+      online: this.onlineUsers.size,
+      total: this.totalPlayers
+    })
+
+    return () => {
+      const index = this.callbacks.presence.indexOf(callback)
+      if (index > -1) {
+        this.callbacks.presence.splice(index, 1)
+      }
+    }
+  }
+
+  /**
+   * Start tracking missiles per minute
+   */
+  startMissileTracking() {
+    // Listen to province changes for click deltas
+    this.onProvinceChange((payload) => {
+      if (payload.eventType === 'UPDATE' && payload.new && payload.old) {
+        const clickDelta = (payload.new.clicks || 0) - (payload.old.clicks || 0)
+        if (clickDelta > 0) {
+          this.missileEvents.push({
+            timestamp: Date.now(),
+            count: clickDelta
+          })
+        }
+      }
+    })
+
+    // Calculate missiles per minute every 2 seconds
+    this.missileTrackingInterval = setInterval(() => {
+      this._calculateMissilesPerMinute()
+    }, 2000)
+
+    // Initial calculation
+    this._calculateMissilesPerMinute()
+  }
+
+  /**
+   * Calculate missiles per minute from recent events
+   * @private
+   */
+  _calculateMissilesPerMinute() {
+    const now = Date.now()
+    const oneMinuteAgo = now - 60000
+
+    // Filter events from last 60 seconds
+    this.missileEvents = this.missileEvents.filter(e => e.timestamp > oneMinuteAgo)
+
+    // Sum up all missiles in the last minute
+    const totalMissiles = this.missileEvents.reduce((sum, e) => sum + e.count, 0)
+
+    // Calculate actual rate based on time window
+    const oldestEvent = this.missileEvents[0]
+    let rate = 0
+
+    if (this.missileEvents.length > 0 && oldestEvent) {
+      const timeSpan = (now - oldestEvent.timestamp) / 1000 // in seconds
+      if (timeSpan > 0) {
+        // Calculate per minute rate
+        rate = Math.round((totalMissiles / timeSpan) * 60)
+      }
+    }
+
+    if (this.missilesPerMinute !== rate) {
+      this.missilesPerMinute = rate
+      this._notifyMissilesChange()
+    }
+  }
+
+  /**
+   * Stop missile tracking
+   */
+  stopMissileTracking() {
+    if (this.missileTrackingInterval) {
+      clearInterval(this.missileTrackingInterval)
+      this.missileTrackingInterval = null
+    }
+    this.missileEvents = []
+    this.missilesPerMinute = 0
+  }
+
+  /**
+   * Get current missiles per minute
+   * @returns {number}
+   */
+  getMissilesPerMinute() {
+    return this.missilesPerMinute
+  }
+
+  /**
+   * Notify missiles change listeners
+   * @private
+   */
+  _notifyMissilesChange() {
+    this.callbacks.missiles.forEach(cb => cb(this.missilesPerMinute))
+  }
+
+  /**
+   * Add a missiles change listener
+   * @param {Function} callback - Callback to invoke on missiles changes
+   * @returns {Function} Unsubscribe function
+   */
+  onMissilesChange(callback) {
+    if (typeof callback !== 'function') {
+      throw new Error('Callback must be a function')
+    }
+
+    this.callbacks.missiles.push(callback)
+
+    // Immediately call with current data
+    callback(this.missilesPerMinute)
+
+    return () => {
+      const index = this.callbacks.missiles.indexOf(callback)
+      if (index > -1) {
+        this.callbacks.missiles.splice(index, 1)
       }
     }
   }
