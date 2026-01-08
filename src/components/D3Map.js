@@ -25,6 +25,7 @@ export class D3ThailandMap {
 
     // Ambient missile animation
     this.ambientMissileInterval = null
+    this.crossScreenMissileInterval = null
   }
 
   async init(session) {
@@ -38,6 +39,7 @@ export class D3ThailandMap {
     this.setupInteractions()
     this.enableZoom()  // Enable drag/pan by default
     this.startAmbientMissiles()  // Start ambient animation
+    this.startCrossScreenMissiles()  // Start cross-screen missiles
   }
 
   startAmbientMissiles() {
@@ -147,6 +149,121 @@ export class D3ThailandMap {
     if (this.ambientMissileInterval) {
       clearTimeout(this.ambientMissileInterval)
       this.ambientMissileInterval = null
+    }
+  }
+
+  startCrossScreenMissiles() {
+    // Fire cross-screen missiles at slower intervals
+    const fireCrossScreenMissile = () => {
+      if (!this.container) return
+      this.showCrossScreenMissile()
+    }
+
+    // Schedule missiles at random intervals (slower than ambient)
+    const scheduleNext = () => {
+      const delay = 800 + Math.random() * 2000  // 800-2800ms
+      this.crossScreenMissileInterval = setTimeout(() => {
+        fireCrossScreenMissile()
+        scheduleNext()
+      }, delay)
+    }
+
+    scheduleNext()
+  }
+
+  showCrossScreenMissile() {
+    const containerWidth = this.container.offsetWidth
+    const containerHeight = this.container.offsetHeight
+
+    // Random start edge (0: left, 1: top, 2: right, 3: bottom)
+    const startEdge = Math.floor(Math.random() * 4)
+    let startX, startY, endX, endY
+
+    // Calculate random positions on edges
+    switch (startEdge) {
+      case 0: // Start from left, go to right
+        startX = -30
+        startY = Math.random() * containerHeight
+        endX = containerWidth + 30
+        endY = Math.random() * containerHeight
+        break
+      case 1: // Start from top, go to bottom
+        startX = Math.random() * containerWidth
+        startY = -30
+        endX = Math.random() * containerWidth
+        endY = containerHeight + 30
+        break
+      case 2: // Start from right, go to left
+        startX = containerWidth + 30
+        startY = Math.random() * containerHeight
+        endX = -30
+        endY = Math.random() * containerHeight
+        break
+      case 3: // Start from bottom, go to top
+        startX = Math.random() * containerWidth
+        startY = containerHeight + 30
+        endX = Math.random() * containerWidth
+        endY = -30
+        break
+    }
+
+    const missile = document.createElement('div')
+    missile.className = 'cross-screen-missile'
+
+    const deltaX = endX - startX
+    const deltaY = endY - startY
+    const length = Math.sqrt(deltaX * deltaX + deltaY * deltaY)
+    const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI)
+
+    // Random color with lower opacity for subtle effect
+    const colors = ['#00ffff', '#ff00ff', '#00ff88', '#ffaa00', '#ff4466', '#8888ff']
+    const color = colors[Math.floor(Math.random() * colors.length)]
+
+    // Slower animation duration (0.8-1.5s)
+    const duration = 0.8 + Math.random() * 0.7
+
+    missile.style.cssText = `
+      position: absolute;
+      left: ${startX}px;
+      top: ${startY}px;
+      width: ${length}px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, ${color}33 20%, ${color}55 50%, ${color}33 80%, transparent 100%);
+      transform-origin: left center;
+      transform: rotate(${angle}deg);
+      pointer-events: none;
+      z-index: 40;
+      opacity: 0;
+      animation: crossScreenMissileShoot ${duration}s ease-in-out forwards;
+    `
+
+    // Add small head to cross-screen missile
+    const head = document.createElement('div')
+    head.style.cssText = `
+      position: absolute;
+      right: -3px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      background: ${color};
+      border-radius: 50%;
+      box-shadow: 0 0 6px ${color}, 0 0 12px ${color}66;
+    `
+    missile.appendChild(head)
+
+    this.container.appendChild(missile)
+
+    // Remove after animation
+    setTimeout(() => {
+      missile.remove()
+    }, duration * 1000 + 100)
+  }
+
+  stopCrossScreenMissiles() {
+    if (this.crossScreenMissileInterval) {
+      clearTimeout(this.crossScreenMissileInterval)
+      this.crossScreenMissileInterval = null
     }
   }
 
@@ -524,6 +641,22 @@ export class D3ThailandMap {
       animation: missileShoot 0.3s ease-out forwards;
     `
 
+    // Add missile head (bigger tip)
+    const head = document.createElement('div')
+    head.className = 'missile-head'
+    head.style.cssText = `
+      position: absolute;
+      right: -4px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 8px;
+      height: 8px;
+      background: ${color};
+      border-radius: 50%;
+      box-shadow: 0 0 8px ${color}, 0 0 16px ${color};
+    `
+    missile.appendChild(head)
+
     this.container.appendChild(missile)
 
     setTimeout(() => {
@@ -871,6 +1004,7 @@ export class D3ThailandMap {
 
     // Stop ambient missiles
     this.stopAmbientMissiles()
+    this.stopCrossScreenMissiles()
 
     const tooltip = document.getElementById('province-tooltip')
     if (tooltip) {

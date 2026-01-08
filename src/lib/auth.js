@@ -30,6 +30,19 @@ export async function initAuth() {
       // Verify Supabase auth is still valid
       const { data: { session: authSession } } = await supabase.auth.getSession()
       if (authSession) {
+        // Fetch fresh player data to get updated total_clicks
+        const { data: freshPlayer, error } = await supabase
+          .from('players')
+          .select('*')
+          .eq('id', session.player.id)
+          .single()
+
+        if (!error && freshPlayer) {
+          session.player = freshPlayer
+          // Update localStorage with fresh data
+          localStorage.setItem(SESSION_KEY, JSON.stringify(session))
+        }
+
         return session
       }
     } catch (e) {

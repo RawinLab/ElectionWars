@@ -575,6 +575,32 @@
   filter: drop-shadow(0 0 2px currentColor);
 }
 
+/* Cross-Screen Missile Animation */
+@keyframes crossScreenMissileShoot {
+  0% {
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+  10% {
+    opacity: 0.7;
+  }
+  30% {
+    clip-path: polygon(0 0, 30% 0, 30% 100%, 0 100%);
+  }
+  70% {
+    opacity: 0.5;
+    clip-path: polygon(70% 0, 100% 0, 100% 100%, 70% 100%);
+  }
+  100% {
+    opacity: 0;
+    clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%);
+  }
+}
+
+.cross-screen-missile {
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
 /* ========================
    Impact Glow Effect
    ======================== */

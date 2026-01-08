@@ -3,20 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="ELECTION69WAR - Real-time political clicker game for Thailand's 2026 election">
-  <meta name="keywords" content="thailand, election, game, political, clicker, 2026, election69war">
-  <meta name="author" content="RawinLab">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="ELECTION69WAR - อีเลคชั่น69วอร์">
-  <meta property="og:description" content="เลือกพรรคของคุณและแข่งขันยึดครอง 77 จังหวัด!">
+  <!-- Primary Meta Tags -->
+  <title>ELECTION69WAR พลังคุณเปลี่ยนประเทศไทย 🗳️</title>
+  <meta name="title" content="ELECTION69WAR พลังคุณเปลี่ยนประเทศไทย">
+  <meta name="description" content="เข้าร่วมสงครามการเลือกตั้ง 2569! เลือกพรรคที่คุณรัก คลิกยึดครอง 77 จังหวัดทั่วประเทศไทย แข่งขันแบบ Real-time กับผู้เล่นทั่วไทย | Join the 2026 election war! Choose your party, click to conquer all 77 provinces of Thailand in real-time multiplayer battles.">
+  <meta name="keywords" content="ELECTION69WAR, อีเลคชั่น69วอร์, การเลือกตั้ง2569, election 2026, เกมพรรคการเมือง, political game, เกมยึดจังหวัด, province conquest, พรรคการเมืองไทย, thai political parties, เกมคลิกเกอร์, clicker game, เกม multiplayer, real-time game, 52พรรค, 77จังหวัด, เกมการเมือง, thailand election game">
+  <meta name="author" content="RawinLab">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="Thai, English">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://electionwars-1c06c.web.app/">
+  <meta property="og:title" content="ELECTION69WAR พลังคุณเปลี่ยนประเทศไทย">
+  <meta property="og:description" content="เข้าร่วมสงครามการเลือกตั้ง 2569! เลือกพรรคที่คุณรัก คลิกยึดครอง 77 จังหวัดทั่วประเทศไทย แข่งขันแบบ Real-time กับผู้เล่นทั่วไทย">
+  <meta property="og:image" content="https://electionwars-1c06c.web.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="ELECTION69WAR - พลังคุณเปลี่ยนประเทศไทย">
+  <meta property="og:site_name" content="ELECTION69WAR">
   <meta property="og:locale" content="th_TH">
 
-  <!-- Favicon -->
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://electionwars-1c06c.web.app/">
+  <meta property="twitter:title" content="ELECTION69WAR พลังคุณเปลี่ยนประเทศไทย">
+  <meta property="twitter:description" content="เข้าร่วมสงครามการเลือกตั้ง 2569! เลือกพรรคที่คุณรัก คลิกยึดครอง 77 จังหวัดทั่วประเทศไทย แข่งขันแบบ Real-time กับผู้เล่นทั่วไทย">
+  <meta property="twitter:image" content="https://electionwars-1c06c.web.app/og-image.png">
+  <meta property="twitter:image:alt" content="ELECTION69WAR - พลังคุณเปลี่ยนประเทศไทย">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://electionwars-1c06c.web.app/">
+
+  <!-- Favicon & Icons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/logo-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/logo-512.png">
 
   <title>ELECTION69WAR - อีเลคชั่น69วอร์ 🗳️</title>
+
+  <!-- Google AdSense - Hidden until implemented -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2590205442909982" crossorigin="anonymous"></script> -->
 
   <!-- Google Fonts - Cyberpunk Gaming Typography + Thai Support -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,6 +80,10 @@
           <div class="modal-header">
             <h1 class="logo-text logo-thai-flag">ELECTION69WAR</h1>
             <p class="modal-subtitle">เลือกพรรค ยึดครองจังหวัด ชิงชัยประเทศไทย</p>
+            <button id="rules-btn" class="btn-rules" title="กติกาการเล่น">
+              <span class="rules-icon">❓</span>
+              <span class="rules-text">กติกา</span>
+            </button>
           </div>
 
           <div class="modal-body">
@@ -110,13 +146,17 @@
 
       <!-- Left Sidebar Overlay: Your Empire -->
       <aside id="left-sidebar" class="sidebar-overlay sidebar-left-overlay">
+        <!-- Mobile Toggle Button -->
+        <button id="left-sidebar-toggle" class="sidebar-toggle sidebar-toggle-left" title="แสดง/ซ่อน">
+          <span class="toggle-arrow">▶</span>
+        </button>
         <!-- Connection Status -->
         <div id="connection-status" class="connection-status-sidebar"></div>
 
         <div class="overlay-panel">
           <div class="panel-header">
-            <span class="panel-icon">👑</span>
-            <span class="panel-title">YOUR EMPIRE</span>
+            <span class="panel-icon">🎖️</span>
+            <span class="panel-title">YOUR PARTY</span>
           </div>
           <!-- Party Info with Logo -->
           <div class="empire-party-info">
@@ -162,6 +202,10 @@
 
       <!-- Right Sidebar Overlay: Target & War Status -->
       <aside id="right-sidebar" class="sidebar-overlay sidebar-right-overlay">
+        <!-- Mobile Toggle Button -->
+        <button id="right-sidebar-toggle" class="sidebar-toggle sidebar-toggle-right" title="แสดง/ซ่อน">
+          <span class="toggle-arrow">◀</span>
+        </button>
         <!-- Target Panel -->
         <div class="overlay-panel target-panel">
           <div class="panel-header">
@@ -199,38 +243,49 @@
           </div>
         </div>
 
-        <!-- Conquered Panel (Right) -->
+        <!-- Conquered Panel (Right) - Top 5 Parties -->
         <div class="overlay-panel conquered-right-panel">
           <div class="panel-header">
             <span class="panel-icon">🏆</span>
-            <span class="panel-title">CONQUERED (<span id="conquered-total">0</span>)</span>
+            <span class="panel-title">CONQUERED</span>
           </div>
-          <div id="conquered-list-right" class="conquered-list-compact">
-            <!-- Dynamically populated -->
+          <div id="conquered-leaderboard" class="conquered-leaderboard">
+            <!-- Top 5 parties dynamically populated -->
+            <div class="leaderboard-loading">Loading...</div>
           </div>
+          <button id="show-full-leaderboard-btn" class="btn-more-leaderboard">
+            <span>ดูทั้งหมด</span>
+            <span class="more-arrow">▼</span>
+          </button>
         </div>
 
-        <!-- War Status Panel -->
-        <div class="overlay-panel war-status-panel">
+        <!-- War Status Panel - Hidden for now -->
+        <!-- <div class="overlay-panel war-status-panel">
           <div class="panel-header">
             <span class="panel-icon">⚔️</span>
             <span class="panel-title">WAR STATUS</span>
           </div>
           <div id="war-status-list" class="war-status-list">
-            <!-- Dynamically populated with global rankings -->
+            < !-- Dynamically populated with global rankings -- >
           </div>
-        </div>
+        </div> -->
       </aside>
 
-      <!-- Settings Button (Top Right) -->
-      <button id="settings-btn" class="settings-btn-overlay" title="Settings">⚙️</button>
+      <!-- Settings Button (Top Right) - Hidden for now -->
+      <!-- <button id="settings-btn" class="settings-btn-overlay" title="Settings">⚙️</button> -->
 
-      <!-- Ad Container (Bottom) -->
-      <footer class="game-footer-overlay">
+      <!-- Ad Container (Bottom) - Hidden until implemented -->
+      <!-- <footer class="game-footer-overlay">
         <div id="ad-container" class="ad-container">
-          <!-- Google AdSense code will be inserted here after approval -->
+          <ins class="adsbygoogle"
+               style="display:block; min-width:300px; max-width:728px; width:100%; height:90px;"
+               data-ad-client="ca-pub-2590205442909982"
+               data-ad-format="auto"
+               data-full-width-responsive="true"></ins>
+          <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+          <span class="ad-placeholder">Advertisement</span>
         </div>
-      </footer>
+      </footer> -->
     </div>
 
     <!-- Game End Screen -->
@@ -251,6 +306,62 @@
 
   <!-- Province Tooltip -->
   <div id="province-tooltip" class="province-tooltip hidden"></div>
+
+  <!-- Rules Modal -->
+  <div id="rules-modal" class="rules-modal-overlay hidden">
+    <div class="rules-modal-content">
+      <button id="close-rules-btn" class="btn-close-modal" title="ปิด">✕</button>
+      <h2 class="rules-title">📜 กติกาการเล่น</h2>
+
+      <div class="rules-sections">
+        <div class="rules-section">
+          <h3>🎮 วิธีเล่น</h3>
+          <ul>
+            <li><strong>เลือกพรรค</strong> - เลือกพรรคการเมืองที่ต้องการสนับสนุน</li>
+            <li><strong>ใส่ชื่อเล่น</strong> - ตั้งชื่อผู้เล่นของคุณ</li>
+            <li><strong>คลิกที่จังหวัด</strong> - คลิกบนแผนที่เพื่อยิง missiles โจมตี</li>
+          </ul>
+        </div>
+
+        <div class="rules-section">
+          <h3>⚔️ ระบบการต่อสู้</h3>
+          <ul>
+            <li><strong>โจมตีจังหวัดศัตรู</strong> - คลิกที่จังหวัดของพรรคอื่นเพื่อลด HP</li>
+            <li><strong>ป้องกันจังหวัดพรรคตัวเอง</strong> - คลิกที่จังหวัดของพรรคตัวเองเพื่อเพิ่ม Shield</li>
+            <li><strong>ยึดครอง</strong> - เมื่อ HP จังหวัดหมด จังหวัดนั้นจะเปลี่ยนเป็นของพรรคคุณ</li>
+          </ul>
+        </div>
+
+        <div class="rules-section">
+          <h3>💎 ระบบ HP & Shield</h3>
+          <ul>
+            <li><strong>HP (Health)</strong> - พลังชีวิตของจังหวัด เมื่อหมดจะถูกยึดครอง</li>
+            <li><strong>Shield</strong> - เกราะป้องกัน ต้องทำลาย Shield ก่อนถึงจะลด HP ได้</li>
+          </ul>
+        </div>
+
+        <div class="rules-section">
+          <h3>🏆 เป้าหมาย</h3>
+          <ul>
+            <li>ยึดครองจังหวัดให้ได้มากที่สุด (77 จังหวัด)</li>
+            <li>แข่งขันกับผู้เล่นทั่วประเทศแบบ Real-time</li>
+            <li>พรรคที่ยึดครองจังหวัดมากที่สุดเมื่อหมดเวลาชนะ</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Leaderboard Modal -->
+  <div id="leaderboard-modal" class="leaderboard-modal-overlay hidden">
+    <div class="leaderboard-modal-content">
+      <button id="close-leaderboard-btn" class="btn-close-modal" title="ปิด">✕</button>
+      <h2 class="leaderboard-modal-title">🏆 อันดับพรรคที่ยึดครองจังหวัด</h2>
+      <div id="full-leaderboard-list" class="full-leaderboard-list">
+        <!-- Full leaderboard dynamically populated -->
+      </div>
+    </div>
+  </div>
 
   <!-- Scripts -->
   <script type="module" src="/src/main.js"></script>

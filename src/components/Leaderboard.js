@@ -5,6 +5,7 @@ export class Leaderboard {
     this.container = container;
     this.realtimeManager = null;
     this.currentData = [];
+    this.onUpdateCallbacks = [];
   }
 
   async fetch() {
@@ -19,6 +20,7 @@ export class Leaderboard {
 
       this.currentData = data || [];
       this.render(this.currentData);
+      this.triggerUpdate();
       return this.currentData;
     } catch (error) {
       this.renderError(error.message);
@@ -138,5 +140,15 @@ export class Leaderboard {
         this.fetch();
       });
     }
+  }
+
+  onUpdate(callback) {
+    if (typeof callback === 'function') {
+      this.onUpdateCallbacks.push(callback);
+    }
+  }
+
+  triggerUpdate() {
+    this.onUpdateCallbacks.forEach(callback => callback(this.currentData));
   }
 }

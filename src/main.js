@@ -116,6 +116,95 @@ function setupEventListeners() {
   if (closeModalBtn) {
     closeModalBtn.addEventListener('click', hidePartySelectorOverlay)
   }
+
+  // Rules modal
+  const rulesBtn = document.getElementById('rules-btn')
+  const rulesModal = document.getElementById('rules-modal')
+  const closeRulesBtn = document.getElementById('close-rules-btn')
+
+  if (rulesBtn && rulesModal) {
+    rulesBtn.addEventListener('click', () => {
+      rulesModal.classList.remove('hidden')
+    })
+  }
+
+  if (closeRulesBtn && rulesModal) {
+    closeRulesBtn.addEventListener('click', () => {
+      rulesModal.classList.add('hidden')
+    })
+  }
+
+  // Close rules modal when clicking overlay
+  if (rulesModal) {
+    rulesModal.addEventListener('click', (e) => {
+      if (e.target === rulesModal) {
+        rulesModal.classList.add('hidden')
+      }
+    })
+  }
+
+  // Mobile sidebar toggles
+  const leftSidebar = document.getElementById('left-sidebar')
+  const rightSidebar = document.getElementById('right-sidebar')
+  const leftToggle = document.getElementById('left-sidebar-toggle')
+  const rightToggle = document.getElementById('right-sidebar-toggle')
+
+  if (leftToggle && leftSidebar) {
+    leftToggle.addEventListener('click', () => {
+      leftSidebar.classList.toggle('open')
+      // Close right sidebar when opening left
+      if (leftSidebar.classList.contains('open') && rightSidebar) {
+        rightSidebar.classList.remove('open')
+      }
+    })
+  }
+
+  if (rightToggle && rightSidebar) {
+    rightToggle.addEventListener('click', () => {
+      rightSidebar.classList.toggle('open')
+      // Close left sidebar when opening right
+      if (rightSidebar.classList.contains('open') && leftSidebar) {
+        leftSidebar.classList.remove('open')
+      }
+    })
+  }
+
+  // Close sidebars when clicking on map (mobile)
+  const mapContainer = document.getElementById('thailand-map')
+  if (mapContainer) {
+    mapContainer.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        if (leftSidebar) leftSidebar.classList.remove('open')
+        if (rightSidebar) rightSidebar.classList.remove('open')
+      }
+    })
+  }
+
+  // Leaderboard modal
+  const showLeaderboardBtn = document.getElementById('show-full-leaderboard-btn')
+  const leaderboardModal = document.getElementById('leaderboard-modal')
+  const closeLeaderboardBtn = document.getElementById('close-leaderboard-btn')
+
+  if (showLeaderboardBtn && leaderboardModal) {
+    showLeaderboardBtn.addEventListener('click', () => {
+      renderFullLeaderboard()
+      leaderboardModal.classList.remove('hidden')
+    })
+  }
+
+  if (closeLeaderboardBtn && leaderboardModal) {
+    closeLeaderboardBtn.addEventListener('click', () => {
+      leaderboardModal.classList.add('hidden')
+    })
+  }
+
+  if (leaderboardModal) {
+    leaderboardModal.addEventListener('click', (e) => {
+      if (e.target === leaderboardModal) {
+        leaderboardModal.classList.add('hidden')
+      }
+    })
+  }
 }
 
 /**
@@ -564,9 +653,80 @@ async function initializeLeaderboard() {
     await leaderboard.fetch()
     updatePlayerRank()
     console.log('📊 Leaderboard initialized')
+
+    // Render conquered leaderboard (top 5)
+    renderConqueredLeaderboard()
+
+    // Update conquered leaderboard when main leaderboard updates
+    leaderboard.onUpdate(() => {
+      renderConqueredLeaderboard()
+    })
   } catch (error) {
     console.error('Failed to initialize leaderboard:', error)
   }
+}
+
+/**
+ * Render top 5 parties in the conquered leaderboard panel
+ */
+function renderConqueredLeaderboard() {
+  const container = document.getElementById('conquered-leaderboard')
+  if (!container || !leaderboard || !leaderboard.currentData) return
+
+  const top5 = leaderboard.currentData.slice(0, 5)
+
+  if (top5.length === 0) {
+    container.innerHTML = '<div class="leaderboard-empty">ยังไม่มีข้อมูล</div>'
+    return
+  }
+
+  const html = top5.map((party, index) => {
+    const rank = index + 1
+    const rankClass = rank <= 3 ? `rank-${rank}` : ''
+    return `
+      <div class="conquered-leaderboard-item">
+        <span class="conquered-rank ${rankClass}">${rank}</span>
+        <span class="conquered-party-badge" style="background-color: ${party.party_color}"></span>
+        <span class="conquered-party-name">${party.party_name}</span>
+        <span class="conquered-province-count">${party.provinces_count}</span>
+      </div>
+    `
+  }).join('')
+
+  container.innerHTML = html
+}
+
+/**
+ * Render full leaderboard in modal
+ */
+function renderFullLeaderboard() {
+  const container = document.getElementById('full-leaderboard-list')
+  if (!container || !leaderboard || !leaderboard.currentData) return
+
+  const data = leaderboard.currentData
+
+  if (data.length === 0) {
+    container.innerHTML = '<div class="leaderboard-empty">ยังไม่มีข้อมูล</div>'
+    return
+  }
+
+  const html = data.map((party, index) => {
+    const rank = index + 1
+    const rankClass = rank <= 3 ? `rank-${rank}` : ''
+    const isTop3 = rank <= 3
+    return `
+      <div class="full-leaderboard-item ${isTop3 ? 'top-3' : ''}">
+        <span class="full-leaderboard-rank ${rankClass}">${rank}</span>
+        <span class="full-leaderboard-badge" style="background-color: ${party.party_color}"></span>
+        <span class="full-leaderboard-name">${party.party_name}</span>
+        <div class="full-leaderboard-stats">
+          <span class="full-leaderboard-provinces">${party.provinces_count}</span>
+        </div>
+      </div>
+    `
+  }).join('')
+
+  container.innerHTML = html
 }
 
 /**
