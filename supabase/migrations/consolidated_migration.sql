@@ -3,6 +3,49 @@
 -- Generated: 2026-01-08
 
 -- ============================================
+-- PART 0: CLEANUP - DROP EXISTING OBJECTS
+-- ============================================
+
+-- Remove tables from realtime publication first (ignore errors if not exists)
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'province_state') THEN
+    ALTER PUBLICATION supabase_realtime DROP TABLE province_state;
+  END IF;
+  IF EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'game_state') THEN
+    ALTER PUBLICATION supabase_realtime DROP TABLE game_state;
+  END IF;
+EXCEPTION WHEN OTHERS THEN
+  NULL;
+END $$;
+
+-- Drop existing policies (ignore errors if not exist)
+DO $$
+BEGIN
+  DROP POLICY IF EXISTS "Anyone can read parties" ON parties;
+  DROP POLICY IF EXISTS "Anyone can read provinces" ON provinces;
+  DROP POLICY IF EXISTS "Anyone can read province_state" ON province_state;
+  DROP POLICY IF EXISTS "Anyone can read game_state" ON game_state;
+  DROP POLICY IF EXISTS "Anyone can read player stats" ON players;
+EXCEPTION WHEN OTHERS THEN
+  NULL;
+END $$;
+
+-- Drop existing functions
+DROP FUNCTION IF EXISTS click_province(UUID, INTEGER, INTEGER) CASCADE;
+DROP FUNCTION IF EXISTS join_game(UUID, INTEGER, VARCHAR) CASCADE;
+DROP FUNCTION IF EXISTS change_party(UUID, INTEGER) CASCADE;
+DROP FUNCTION IF EXISTS get_leaderboard() CASCADE;
+DROP FUNCTION IF EXISTS init_province_shields() CASCADE;
+
+-- Drop existing tables (order matters due to foreign keys, use CASCADE)
+DROP TABLE IF EXISTS province_state CASCADE;
+DROP TABLE IF EXISTS players CASCADE;
+DROP TABLE IF EXISTS game_state CASCADE;
+DROP TABLE IF EXISTS provinces CASCADE;
+DROP TABLE IF EXISTS parties CASCADE;
+
+-- ============================================
 -- PART 1: CREATE TABLES
 -- ============================================
 
