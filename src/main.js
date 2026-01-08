@@ -5,7 +5,8 @@
 
 import { supabase } from './lib/supabase.js'
 import { initAuth, getSession, joinGame, validateNickname, changeParty } from './lib/auth.js'
-import { ThailandMap } from './components/Map.js'
+// import { ThailandMap } from './components/Map.js'  // Old SVG-based map
+import { D3ThailandMap as ThailandMap } from './components/D3Map.js'  // New D3+GeoJSON map
 import { Leaderboard } from './components/Leaderboard.js'
 import { GameTimer } from './components/Timer.js'
 import { GlobalStats } from './components/GlobalStats.js'
@@ -14,6 +15,7 @@ import { realtimeManager } from './lib/realtime.js'
 import { toastManager } from './components/Toast.js'
 import { getSettingsPanel } from './components/SettingsPanel.js'
 import i18n from './lib/i18n.js'
+import { getPartyLogo, hasPartyLogo } from './lib/partyLogos.js'
 
 // Game end date: February 8, 2026, 23:59:59 Bangkok time (UTC+7)
 const GAME_END_DATE = new Date('2026-02-08T23:59:59+07:00')
@@ -27,6 +29,8 @@ let gameTimer = null
 let globalStats = null
 let connectionStatus = null
 let settingsPanel = null
+let selectedParty = null
+let highlightedIndex = -1
 
 /**
  * Initialize the application
@@ -35,15 +39,24 @@ async function init() {
   console.log('🗳️ Election War - Initializing...')
 
   try {
+    // Always show game screen first (with map in background)
+    document.getElementById('game-screen').classList.remove('hidden')
+
+    // Load parties first
+    await loadParties()
+
     // Check for existing session
     session = await initAuth()
 
     if (session) {
-      // Player already joined - show game screen
-      showGameScreen()
+      // Player already joined - hide party selector overlay
+      hidePartySelectorOverlay()
+      await initializeGameComponents()
     } else {
-      // New player - show party selector
-      showPartySelector()
+      // New player - show party selector overlay
+      showPartySelectorOverlay()
+      // Initialize map in background
+      await initializeMap()
     }
 
     // Set up event listeners
@@ -58,6 +71,33 @@ async function init() {
  * Set up global event listeners
  */
 function setupEventListeners() {
+  // Party search autocomplete
+  const partySearchInput = document.getElementById('party-search-input')
+  if (partySearchInput) {
+    partySearchInput.addEventListener('input', handlePartySearch)
+    partySearchInput.addEventListener('keydown', handleAutocompleteKeydown)
+    partySearchInput.addEventListener('focus', () => {
+      if (partySearchInput.value.length > 0) {
+        handlePartySearch({ target: partySearchInput })
+      }
+    })
+  }
+
+  // Close autocomplete when clicking outside
+  document.addEventListener('click', (e) => {
+    const autocompleteList = document.getElementById('party-autocomplete-list')
+    const partySearchInput = document.getElementById('party-search-input')
+    if (autocompleteList && !autocompleteList.contains(e.target) && e.target !== partySearchInput) {
+      autocompleteList.classList.add('hidden')
+    }
+  })
+
+  // Clear party button
+  const clearPartyBtn = document.getElementById('clear-party-btn')
+  if (clearPartyBtn) {
+    clearPartyBtn.addEventListener('click', clearSelectedParty)
+  }
+
   // Nickname input validation
   const nicknameInput = document.getElementById('nickname-input')
   if (nicknameInput) {
@@ -72,22 +112,208 @@ function setupEventListeners() {
 }
 
 /**
- * Show party selector screen
+ * Show party selector overlay
  */
-async function showPartySelector() {
-  document.getElementById('party-selector').classList.remove('hidden')
-  document.getElementById('game-screen').classList.add('hidden')
+function showPartySelectorOverlay() {
+  const overlay = document.getElementById('party-selector-overlay')
+  if (overlay) {
+    overlay.classList.remove('hidden')
+  }
+}
 
-  // Load parties
-  await loadParties()
+/**
+ * Hide party selector overlay
+ */
+function hidePartySelectorOverlay() {
+  const overlay = document.getElementById('party-selector-overlay')
+  if (overlay) {
+    overlay.classList.add('hidden')
+  }
+}
+
+/**
+ * Handle party search input
+ */
+function handlePartySearch(e) {
+  const query = e.target.value.toLowerCase().trim()
+  const autocompleteList = document.getElementById('party-autocomplete-list')
+
+  if (!query) {
+    autocompleteList.classList.add('hidden')
+    return
+  }
+
+  // Filter parties and sort by ballot number
+  const filteredParties = allParties.filter(party =>
+    party.name_thai?.toLowerCase().includes(query) ||
+    party.name_english?.toLowerCase().includes(query) ||
+    (party.ballot_number && party.ballot_number.toString().includes(query))
+  )
+  .sort((a, b) => (a.ballot_number || 999) - (b.ballot_number || 999))
+  .slice(0, 10) // Limit to 10 results
+
+  if (filteredParties.length === 0) {
+    autocompleteList.classList.add('hidden')
+    return
+  }
+
+  // Render autocomplete list
+  highlightedIndex = -1
+  autocompleteList.innerHTML = filteredParties.map((party, index) => {
+    // Use ballot_number for logo lookup (since id = ballot_number in new data)
+    const logoUrl = getPartyLogo(party.ballot_number || party.id)
+    const logoHtml = logoUrl
+      ? `<img src="${logoUrl}" alt="${party.name_english}" class="party-logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+         <div class="party-color-badge" style="background: ${party.official_color}; display: none;"></div>`
+      : `<div class="party-color-badge" style="background: ${party.official_color};"></div>`
+
+    const ballotNum = party.ballot_number || party.id
+    return `
+      <div class="autocomplete-item" data-party-id="${party.id}" data-index="${index}">
+        <div class="party-ballot-number">เบอร์ ${ballotNum}</div>
+        <div class="party-logo-container">
+          ${logoHtml}
+        </div>
+        <div class="party-name-container">
+          <div class="party-name-thai">${party.name_thai}</div>
+          <div class="party-name-english">${party.name_english}</div>
+        </div>
+      </div>
+    `
+  }).join('')
+
+  // Add click handlers
+  autocompleteList.querySelectorAll('.autocomplete-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const partyId = parseInt(item.dataset.partyId)
+      const party = allParties.find(p => p.id === partyId)
+      if (party) {
+        selectPartyFromAutocomplete(party)
+      }
+    })
+  })
+
+  autocompleteList.classList.remove('hidden')
+}
+
+/**
+ * Handle keyboard navigation in autocomplete
+ */
+function handleAutocompleteKeydown(e) {
+  const autocompleteList = document.getElementById('party-autocomplete-list')
+  const items = autocompleteList.querySelectorAll('.autocomplete-item')
+
+  if (items.length === 0) return
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault()
+    highlightedIndex = Math.min(highlightedIndex + 1, items.length - 1)
+    updateHighlighted(items)
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    highlightedIndex = Math.max(highlightedIndex - 1, 0)
+    updateHighlighted(items)
+  } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+    e.preventDefault()
+    const item = items[highlightedIndex]
+    const partyId = parseInt(item.dataset.partyId)
+    const party = allParties.find(p => p.id === partyId)
+    if (party) {
+      selectPartyFromAutocomplete(party)
+    }
+  } else if (e.key === 'Escape') {
+    autocompleteList.classList.add('hidden')
+  }
+}
+
+/**
+ * Update highlighted item in autocomplete
+ */
+function updateHighlighted(items) {
+  items.forEach((item, index) => {
+    item.classList.toggle('highlighted', index === highlightedIndex)
+    if (index === highlightedIndex) {
+      item.scrollIntoView({ block: 'nearest' })
+    }
+  })
+}
+
+/**
+ * Select party from autocomplete
+ */
+function selectPartyFromAutocomplete(party) {
+  selectedParty = party
+
+  // Hide autocomplete
+  const autocompleteList = document.getElementById('party-autocomplete-list')
+  autocompleteList.classList.add('hidden')
+
+  // Clear search input
+  const searchInput = document.getElementById('party-search-input')
+  searchInput.value = ''
+
+  // Show selected party preview
+  const preview = document.getElementById('selected-party-preview')
+  const previewColor = preview.querySelector('.preview-party-color')
+  const previewName = preview.querySelector('.preview-party-name')
+  const previewEnglish = preview.querySelector('.preview-party-english')
+
+  // Check if party has a logo (use ballot_number as key)
+  const logoUrl = getPartyLogo(party.ballot_number || party.id)
+  if (logoUrl) {
+    previewColor.innerHTML = `<img src="${logoUrl}" alt="${party.name_english}" class="preview-logo-img" onerror="this.style.display='none'; this.parentElement.style.background='${party.official_color}';">`
+    previewColor.style.background = 'transparent'
+  } else {
+    previewColor.innerHTML = ''
+    previewColor.style.background = party.official_color
+  }
+
+  const ballotNum = party.ballot_number || party.id
+  previewName.textContent = `เบอร์ ${ballotNum} - ${party.name_thai}`
+  previewEnglish.textContent = party.name_english
+
+  preview.classList.remove('hidden')
+
+  // Update join button state
+  updateJoinButtonState()
+
+  // Focus nickname input
+  document.getElementById('nickname-input').focus()
+}
+
+/**
+ * Clear selected party
+ */
+function clearSelectedParty() {
+  selectedParty = null
+
+  // Hide preview
+  const preview = document.getElementById('selected-party-preview')
+  preview.classList.add('hidden')
+
+  // Update join button state
+  updateJoinButtonState()
+
+  // Focus search input
+  document.getElementById('party-search-input').focus()
+}
+
+/**
+ * Update join button state
+ */
+function updateJoinButtonState() {
+  const joinButton = document.getElementById('join-button')
+  const nicknameInput = document.getElementById('nickname-input')
+  const nickname = nicknameInput?.value.trim() || ''
+
+  const canJoin = selectedParty && nickname.length >= 2 && nickname.length <= 20
+  joinButton.disabled = !canJoin
 }
 
 /**
  * Load parties from Supabase
  */
 async function loadParties() {
-  const grid = document.getElementById('party-grid')
-
   try {
     const { data: parties, error } = await supabase
       .from('parties')
@@ -98,25 +324,10 @@ async function loadParties() {
 
     // Store parties globally
     allParties = parties
-
-    grid.innerHTML = parties.map(party => `
-      <div class="party-card" data-party-id="${party.id}" style="--party-color: ${party.official_color}">
-        <div class="party-color" style="background: ${party.official_color}"></div>
-        <div class="party-info">
-          <h3>${party.name_thai}</h3>
-          <p>${party.name_english}</p>
-          ${party.ballot_number ? `<span class="ballot-number">#${party.ballot_number}</span>` : ''}
-        </div>
-      </div>
-    `).join('')
-
-    // Add click handlers
-    grid.querySelectorAll('.party-card').forEach(card => {
-      card.addEventListener('click', () => selectParty(card.dataset.partyId, parties))
-    })
+    console.log(`📋 Loaded ${parties.length} parties`)
   } catch (error) {
     console.error('Failed to load parties:', error)
-    grid.innerHTML = '<div class="error">Failed to load parties. Please refresh.</div>'
+    showError('Failed to load parties. Please refresh.')
   }
 }
 
@@ -126,18 +337,18 @@ async function loadParties() {
 function handleNicknameInput(e) {
   const nickname = e.target.value
   const errorEl = document.getElementById('nickname-error')
-  const joinButton = document.getElementById('join-button')
 
   const validation = validateNickname(nickname)
 
   if (nickname.length > 0 && !validation.valid) {
     errorEl.textContent = validation.error
     errorEl.classList.remove('hidden')
-    joinButton.disabled = true
   } else {
     errorEl.classList.add('hidden')
-    joinButton.disabled = false
   }
+
+  // Update join button state
+  updateJoinButtonState()
 }
 
 /**
@@ -158,19 +369,26 @@ async function handleJoinGame() {
   }
 
   // Check party selection
-  if (!window.selectedParty) {
-    showError('Please select a party first')
+  if (!selectedParty) {
+    showError('กรุณาเลือกพรรคก่อน / Please select a party first')
     return
   }
 
   // Disable button during join
   joinButton.disabled = true
-  joinButton.textContent = 'Joining...'
+  joinButton.textContent = 'กำลังเข้าร่วม...'
 
   try {
-    session = await joinGame(window.selectedParty.id, nickname)
+    session = await joinGame(selectedParty.id, nickname)
     console.log('✅ Joined game:', session)
-    showGameScreen()
+
+    // Hide party selector overlay
+    hidePartySelectorOverlay()
+
+    // Initialize remaining game components
+    await initializeGameComponents()
+
+    toastManager.show(`ยินดีต้อนรับ ${nickname}!`, 'success')
   } catch (error) {
     console.error('Join game error:', error)
     errorEl.textContent = error.message || 'Failed to join game'
@@ -181,48 +399,24 @@ async function handleJoinGame() {
 }
 
 /**
- * Handle party selection
+ * Initialize all game components (called after successful login)
  */
-function selectParty(partyId, parties) {
-  const party = parties.find(p => p.id === parseInt(partyId))
-  if (!party) return
-
-  // Show selected party preview
-  const preview = document.getElementById('party-preview')
-  preview.innerHTML = `
-    <div class="selected-party-badge" style="background: ${party.official_color}"></div>
-    <div class="selected-party-name">
-      <h3>${party.name_thai}</h3>
-      <p>${party.name_english}</p>
-    </div>
-  `
-
-  // Show nickname input
-  document.getElementById('selected-party').classList.remove('hidden')
-  document.getElementById('nickname-input').focus()
-
-  // Store selected party
-  window.selectedParty = party
-
-  // Highlight selected card
-  document.querySelectorAll('.party-card').forEach(card => {
-    card.classList.toggle('selected', card.dataset.partyId === partyId)
-  })
-}
-
-/**
- * Show game screen
- */
-async function showGameScreen() {
-  document.getElementById('party-selector').classList.add('hidden')
-  document.getElementById('game-screen').classList.remove('hidden')
-
+async function initializeGameComponents() {
   // Update player info in header
   updatePlayerInfo()
 
-  // Initialize all game components in parallel
+  // Initialize map if not already done
+  if (!thailandMap) {
+    await initializeMap()
+  } else {
+    // Update map with session
+    thailandMap.session = session
+    await thailandMap.loadData()
+    thailandMap.updateAllProvinces()
+  }
+
+  // Initialize other components in parallel
   await Promise.all([
-    initializeMap(),
     initializeLeaderboard(),
     initializeGlobalStats()
   ])
@@ -237,7 +431,18 @@ async function showGameScreen() {
   // Initialize settings panel
   initializeSettingsPanel()
 
-  console.log('🎮 Game screen loaded. Session:', session)
+  // Update conquered list
+  updateConqueredList()
+
+  console.log('🎮 Game components initialized. Session:', session)
+}
+
+/**
+ * Legacy function - kept for compatibility
+ */
+async function showGameScreen() {
+  hidePartySelectorOverlay()
+  await initializeGameComponents()
 }
 
 /**
@@ -253,6 +458,7 @@ async function initializeLeaderboard() {
   try {
     leaderboard = new Leaderboard(leaderboardContainer)
     await leaderboard.fetch()
+    updatePlayerRank()
     console.log('📊 Leaderboard initialized')
   } catch (error) {
     console.error('Failed to initialize leaderboard:', error)
@@ -362,8 +568,11 @@ function initializeRealtime() {
     }
     // Refresh leaderboard on province changes
     if (leaderboard) {
-      leaderboard.fetch()
+      leaderboard.fetch().then(() => updatePlayerRank())
     }
+
+    // Update conquered list
+    updateConqueredList()
   })
 
   // Subscribe to game state changes
@@ -440,26 +649,135 @@ async function initializeMap() {
  * Update player info display
  */
 function updatePlayerInfo() {
-  const playerInfoEl = document.getElementById('player-info')
-  if (!session || !playerInfoEl) return
+  if (!session) return
 
   const { player, party } = session
 
-  playerInfoEl.innerHTML = `
-    <div class="player-badge" style="background: ${party.official_color}"></div>
-    <div class="player-details">
-      <span class="player-name">${player.nickname}</span>
-      <span class="player-party">${party.name_thai}</span>
-    </div>
-    <button id="change-party-btn" class="btn btn-secondary btn-sm" title="Change Party">
-      เปลี่ยนพรรค
-    </button>
-  `
+  // Update header click counter
+  const clickCount = document.getElementById('click-count')
+  if (clickCount) {
+    clickCount.textContent = player.total_clicks?.toLocaleString() || '0'
+  }
 
-  // Add change party handler
+  // Update sidebar stats
+  const playerClicks = document.getElementById('player-clicks')
+  if (playerClicks) {
+    playerClicks.textContent = player.total_clicks?.toLocaleString() || '0'
+  }
+
+  const playerParty = document.getElementById('player-party')
+  if (playerParty) {
+    playerParty.innerHTML = `<span class="party-badge" style="background: ${party.official_color}"></span> ${party.name_thai}`
+  }
+
+  // Update Your Empire panel - party info
+  const empirePartyColor = document.getElementById('empire-party-color')
+  const empirePartyName = document.getElementById('empire-party-name')
+  const empirePlayerName = document.getElementById('empire-player-name')
+  const empirePartyBadge = document.getElementById('empire-party-badge')
+
+  if (empirePartyColor) {
+    empirePartyColor.style.background = party.official_color
+    empirePartyColor.style.boxShadow = `0 0 8px ${party.official_color}`
+  }
+  if (empirePartyName) {
+    empirePartyName.textContent = party.name_thai || party.name_english
+    empirePartyName.style.color = party.official_color
+    empirePartyName.style.textShadow = `0 0 10px ${party.official_color}`
+  }
+  if (empirePlayerName) {
+    empirePlayerName.textContent = player.nickname
+  }
+  if (empirePartyBadge) {
+    empirePartyBadge.style.setProperty('--party-color', party.official_color)
+  }
+
+  // Add change party button handler
   const changePartyBtn = document.getElementById('change-party-btn')
   if (changePartyBtn) {
-    changePartyBtn.addEventListener('click', showChangePartyDialog)
+    // Remove existing listener to prevent duplicates
+    changePartyBtn.replaceWith(changePartyBtn.cloneNode(true))
+    document.getElementById('change-party-btn').addEventListener('click', showChangePartyDialog)
+  }
+
+  // Update conquered provinces list
+  updateConqueredList()
+
+  // Update legacy player info element if present
+  const playerInfoEl = document.getElementById('player-info')
+  if (playerInfoEl) {
+    playerInfoEl.innerHTML = `
+      <div class="player-badge" style="background: ${party.official_color}"></div>
+      <div class="player-details">
+        <span class="player-name">${player.nickname}</span>
+        <span class="player-party">${party.name_thai}</span>
+      </div>
+    `
+  }
+}
+
+/**
+ * Update conquered provinces list for the player's party
+ */
+async function updateConqueredList() {
+  if (!session || !thailandMap) return
+
+  const { party } = session
+  const conqueredList = document.getElementById('conquered-list')
+  const conqueredCount = document.getElementById('player-conquered-count')
+
+  if (!conqueredList) return
+
+  // Get provinces controlled by player's party
+  const controlledProvinces = []
+  for (const [provinceId, state] of thailandMap.provinceStates) {
+    if (state.controlling_party_id === party.id) {
+      const feature = thailandMap.geoData?.features.find(f => f.properties.id === provinceId)
+      controlledProvinces.push({
+        id: provinceId,
+        nameThai: feature?.properties.name_thai || `Province ${provinceId}`,
+        nameEnglish: feature?.properties.name_english || ''
+      })
+    }
+  }
+
+  // Update count
+  if (conqueredCount) {
+    conqueredCount.textContent = controlledProvinces.length
+  }
+
+  // Update list
+  if (controlledProvinces.length === 0) {
+    conqueredList.innerHTML = '<div class="conquered-empty">ยังไม่มีจังหวัดที่ยึดครอง</div>'
+  } else {
+    conqueredList.innerHTML = controlledProvinces.map(province => `
+      <div class="conquered-item" data-province-id="${province.id}">
+        <span class="province-dot" style="background: ${party.official_color}"></span>
+        <span class="province-name">${province.nameThai}</span>
+      </div>
+    `).join('')
+
+    // Add click handlers to focus on province
+    conqueredList.querySelectorAll('.conquered-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const provinceId = parseInt(item.dataset.provinceId)
+        if (thailandMap) {
+          thailandMap.updateTargetSidebar(provinceId)
+        }
+      })
+    })
+  }
+}
+
+/**
+ * Update player rank from leaderboard data
+ */
+function updatePlayerRank() {
+  if (!session || !leaderboard?.currentData) return
+  const partyRank = leaderboard.currentData.find(p => p.party_id === session.party.id)
+  const rankEl = document.getElementById('player-rank')
+  if (rankEl && partyRank) {
+    rankEl.textContent = `#${partyRank.rank}`
   }
 }
 
@@ -564,4 +882,4 @@ if (document.readyState === 'loading') {
 }
 
 // Export for testing
-export { init, showPartySelector, showGameScreen }
+export { init, showPartySelectorOverlay, hidePartySelectorOverlay, showGameScreen }
