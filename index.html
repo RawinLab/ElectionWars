@@ -94,13 +94,13 @@
       <!-- Player Stats Overlay (shown after joining) -->
       <div id="player-stats-overlay" class="player-stats-overlay hidden">
         <div class="player-stats-content">
-          <div class="stat-item stat-online">
+          <div id="stat-online-btn" class="stat-item stat-online stat-clickable">
             <span class="stat-icon">🟢</span>
             <span class="stat-label">Online</span>
             <span id="online-count" class="stat-value">0</span>
           </div>
           <div class="stat-divider"></div>
-          <div class="stat-item stat-total">
+          <div id="stat-total-btn" class="stat-item stat-total stat-clickable">
             <span class="stat-icon">👥</span>
             <span class="stat-label">ผู้เล่นทั้งหมด</span>
             <span id="total-players" class="stat-value">0</span>
@@ -403,6 +403,30 @@
       <h2 class="leaderboard-modal-title">🏆 อันดับพรรคที่ยึดครองจังหวัด</h2>
       <div id="full-leaderboard-list" class="full-leaderboard-list">
         <!-- Full leaderboard dynamically populated -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Online Users Modal -->
+  <div id="online-users-modal" class="online-users-modal-overlay hidden">
+    <div class="online-users-modal-content">
+      <button id="close-online-users-btn" class="btn-close-modal" title="ปิด">✕</button>
+      <h2 class="online-users-modal-title">🟢 ผู้เล่นออนไลน์</h2>
+      <div id="online-users-list" class="online-users-list">
+        <!-- Online users dynamically populated -->
+        <div class="online-users-loading">กำลังโหลด...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All Users Modal -->
+  <div id="all-users-modal" class="all-users-modal-overlay hidden">
+    <div class="all-users-modal-content">
+      <button id="close-all-users-btn" class="btn-close-modal" title="ปิด">✕</button>
+      <h2 class="all-users-modal-title">👥 ผู้เล่นทั้งหมด</h2>
+      <div id="all-users-list" class="all-users-list">
+        <!-- All users dynamically populated -->
+        <div class="all-users-loading">กำลังโหลด...</div>
       </div>
     </div>
   </div>

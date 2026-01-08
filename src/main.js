@@ -232,6 +232,56 @@ function setupEventListeners() {
       }
     })
   }
+
+  // Online users modal
+  const statOnlineBtn = document.getElementById('stat-online-btn')
+  const onlineUsersModal = document.getElementById('online-users-modal')
+  const closeOnlineUsersBtn = document.getElementById('close-online-users-btn')
+
+  if (statOnlineBtn && onlineUsersModal) {
+    statOnlineBtn.addEventListener('click', () => {
+      showOnlineUsersModal()
+    })
+  }
+
+  if (closeOnlineUsersBtn && onlineUsersModal) {
+    closeOnlineUsersBtn.addEventListener('click', () => {
+      onlineUsersModal.classList.add('hidden')
+    })
+  }
+
+  if (onlineUsersModal) {
+    onlineUsersModal.addEventListener('click', (e) => {
+      if (e.target === onlineUsersModal) {
+        onlineUsersModal.classList.add('hidden')
+      }
+    })
+  }
+
+  // All users modal
+  const statTotalBtn = document.getElementById('stat-total-btn')
+  const allUsersModal = document.getElementById('all-users-modal')
+  const closeAllUsersBtn = document.getElementById('close-all-users-btn')
+
+  if (statTotalBtn && allUsersModal) {
+    statTotalBtn.addEventListener('click', () => {
+      showAllUsersModal()
+    })
+  }
+
+  if (closeAllUsersBtn && allUsersModal) {
+    closeAllUsersBtn.addEventListener('click', () => {
+      allUsersModal.classList.add('hidden')
+    })
+  }
+
+  if (allUsersModal) {
+    allUsersModal.addEventListener('click', (e) => {
+      if (e.target === allUsersModal) {
+        allUsersModal.classList.add('hidden')
+      }
+    })
+  }
 }
 
 /**
@@ -298,6 +348,156 @@ function updateMissilesPerMinute(missilesPerMinute) {
   const element = document.getElementById('missiles-per-minute')
   if (element) {
     element.textContent = missilesPerMinute.toLocaleString()
+  }
+}
+
+/**
+ * Show online users modal and fetch user data
+ */
+async function showOnlineUsersModal() {
+  const modal = document.getElementById('online-users-modal')
+  const listContainer = document.getElementById('online-users-list')
+
+  if (!modal || !listContainer) return
+
+  // Show modal with loading state
+  modal.classList.remove('hidden')
+  listContainer.innerHTML = '<div class="online-users-loading">กำลังโหลด...</div>'
+
+  try {
+    // Get online user IDs
+    const onlineUserIds = realtimeManager.getOnlineUserIds()
+
+    if (onlineUserIds.length === 0) {
+      listContainer.innerHTML = '<div class="online-users-loading">ไม่มีผู้เล่นออนไลน์</div>'
+      return
+    }
+
+    // Fetch player data with party info
+    const { data: players, error } = await supabase
+      .from('players')
+      .select(`
+        id,
+        nickname,
+        total_clicks,
+        party_id,
+        parties (
+          id,
+          name_thai,
+          name_english,
+          official_color
+        )
+      `)
+      .in('id', onlineUserIds)
+      .order('total_clicks', { ascending: false })
+
+    if (error) throw error
+
+    if (!players || players.length === 0) {
+      listContainer.innerHTML = '<div class="online-users-loading">ไม่มีข้อมูลผู้เล่น</div>'
+      return
+    }
+
+    // Render the list
+    listContainer.innerHTML = players.map((player, index) => {
+      const party = player.parties
+      const partyName = party ? party.name_thai : 'ไม่มีพรรค'
+      const partyColor = party ? party.official_color : '#666'
+      const logoUrl = party && hasPartyLogo(party.id) ? getPartyLogo(party.id) : null
+
+      return `
+        <div class="online-user-item">
+          <span class="online-user-rank">#${index + 1}</span>
+          ${logoUrl
+            ? `<img src="${logoUrl}" alt="${partyName}" class="online-user-badge" style="object-fit: contain; background: white;">`
+            : `<div class="online-user-badge" style="background-color: ${partyColor};"></div>`
+          }
+          <div class="online-user-info">
+            <div class="online-user-nickname">${player.nickname || 'ไม่ระบุชื่อ'}</div>
+            <div class="online-user-party">${partyName}</div>
+          </div>
+          <div class="online-user-attacks">
+            <span class="online-user-attacks-value">${(player.total_clicks || 0).toLocaleString()}</span>
+            <span class="online-user-attacks-label">attacks</span>
+          </div>
+        </div>
+      `
+    }).join('')
+
+  } catch (err) {
+    console.error('Failed to fetch online users:', err)
+    listContainer.innerHTML = '<div class="online-users-loading">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>'
+  }
+}
+
+/**
+ * Show all users modal and fetch user data
+ */
+async function showAllUsersModal() {
+  const modal = document.getElementById('all-users-modal')
+  const listContainer = document.getElementById('all-users-list')
+
+  if (!modal || !listContainer) return
+
+  // Show modal with loading state
+  modal.classList.remove('hidden')
+  listContainer.innerHTML = '<div class="all-users-loading">กำลังโหลด...</div>'
+
+  try {
+    // Fetch all players with party info, sorted by total_clicks
+    const { data: players, error } = await supabase
+      .from('players')
+      .select(`
+        id,
+        nickname,
+        total_clicks,
+        party_id,
+        parties (
+          id,
+          name_thai,
+          name_english,
+          official_color
+        )
+      `)
+      .order('total_clicks', { ascending: false })
+      .limit(100) // Limit to top 100 players
+
+    if (error) throw error
+
+    if (!players || players.length === 0) {
+      listContainer.innerHTML = '<div class="all-users-loading">ไม่มีข้อมูลผู้เล่น</div>'
+      return
+    }
+
+    // Render the list
+    listContainer.innerHTML = players.map((player, index) => {
+      const party = player.parties
+      const partyName = party ? party.name_thai : 'ไม่มีพรรค'
+      const partyColor = party ? party.official_color : '#666'
+      const logoUrl = party && hasPartyLogo(party.id) ? getPartyLogo(party.id) : null
+
+      return `
+        <div class="all-user-item">
+          <span class="all-user-rank">#${index + 1}</span>
+          ${logoUrl
+            ? `<img src="${logoUrl}" alt="${partyName}" class="all-user-badge" style="object-fit: contain; background: white;">`
+            : `<div class="all-user-badge" style="background-color: ${partyColor};"></div>`
+          }
+          <div class="all-user-info">
+            <div class="all-user-nickname">${player.nickname || 'ไม่ระบุชื่อ'}</div>
+            <div class="all-user-party">${partyName}</div>
+          </div>
+          <div class="all-user-attacks">
+            <span class="all-user-attacks-value">${(player.total_clicks || 0).toLocaleString()}</span>
+            <span class="all-user-attacks-label">attacks</span>
+          </div>
+        </div>
+      `
+    }).join('')
+
+  } catch (err) {
+    console.error('Failed to fetch all users:', err)
+    listContainer.innerHTML = '<div class="all-users-loading">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>'
   }
 }
 

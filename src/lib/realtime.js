@@ -341,6 +341,22 @@ export class RealtimeManager {
   }
 
   /**
+   * Get list of online user IDs
+   * @returns {string[]}
+   */
+  getOnlineUserIds() {
+    return Array.from(this.onlineUsers.keys())
+  }
+
+  /**
+   * Get online users data (basic presence info)
+   * @returns {Array} Array of { id, nickname, party_id, online_at }
+   */
+  getOnlineUsersData() {
+    return Array.from(this.onlineUsers.values())
+  }
+
+  /**
    * Get total players count
    * @returns {number}
    */
@@ -393,7 +409,7 @@ export class RealtimeManager {
     // Listen to province changes for click deltas
     this.onProvinceChange((payload) => {
       if (payload.eventType === 'UPDATE' && payload.new && payload.old) {
-        const clickDelta = (payload.new.clicks || 0) - (payload.old.clicks || 0)
+        const clickDelta = (payload.new.total_clicks || 0) - (payload.old.total_clicks || 0)
         if (clickDelta > 0) {
           this.missileEvents.push({
             timestamp: Date.now(),
