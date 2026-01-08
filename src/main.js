@@ -31,6 +31,7 @@ let connectionStatus = null
 let settingsPanel = null
 let selectedParty = null
 let highlightedIndex = -1
+let isChangePartyMode = false  // Flag for party change mode
 
 /**
  * Initialize the application
@@ -109,15 +110,67 @@ function setupEventListeners() {
   if (joinButton) {
     joinButton.addEventListener('click', handleJoinGame)
   }
+
+  // Close modal button (for change party mode)
+  const closeModalBtn = document.getElementById('close-party-modal-btn')
+  if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', hidePartySelectorOverlay)
+  }
 }
 
 /**
  * Show party selector overlay
+ * @param {boolean} changeMode - If true, show in change party mode
  */
-function showPartySelectorOverlay() {
+function showPartySelectorOverlay(changeMode = false) {
+  isChangePartyMode = changeMode
   const overlay = document.getElementById('party-selector-overlay')
+  const nicknameGroup = document.querySelector('#party-selector-overlay .form-group:has(#nickname-input)')
+  const joinButton = document.getElementById('join-button')
+  const modalSubtitle = document.querySelector('#party-selector-overlay .modal-subtitle')
+  const closeButton = document.getElementById('close-party-modal-btn')
+
   if (overlay) {
     overlay.classList.remove('hidden')
+
+    // Reset state
+    selectedParty = null
+    document.getElementById('party-search-input').value = ''
+    document.getElementById('selected-party-preview').classList.add('hidden')
+    document.getElementById('party-autocomplete-list').classList.add('hidden')
+
+    if (changeMode) {
+      // Show close button in change mode (allow cancel)
+      if (closeButton) closeButton.classList.remove('hidden')
+      // Hide nickname input in change mode
+      if (nicknameGroup) nicknameGroup.style.display = 'none'
+      if (joinButton) {
+        joinButton.textContent = 'เปลี่ยนพรรค / Change Party'
+        joinButton.disabled = true
+      }
+      if (modalSubtitle) {
+        modalSubtitle.textContent = 'เลือกพรรคใหม่ของคุณ (คลิกจะถูกรีเซ็ตเป็น 0)'
+      }
+    } else {
+      // Hide close button in join mode (must select party)
+      if (closeButton) closeButton.classList.add('hidden')
+      // Show nickname input in join mode
+      if (nicknameGroup) nicknameGroup.style.display = ''
+      const nicknameInput = document.getElementById('nickname-input')
+      if (nicknameInput) nicknameInput.value = ''
+      if (joinButton) {
+        joinButton.textContent = 'เข้าร่วมเกม / Join Game'
+        joinButton.disabled = true
+      }
+      if (modalSubtitle) {
+        modalSubtitle.textContent = 'เลือกพรรค ยึดครองจังหวัด ชิงชัยประเทศไทย'
+      }
+    }
+
+    // Focus on search input
+    setTimeout(() => {
+      document.getElementById('party-search-input').focus()
+    }, 100)
   }
 }
 
@@ -129,6 +182,8 @@ function hidePartySelectorOverlay() {
   if (overlay) {
     overlay.classList.add('hidden')
   }
+  // Reset change mode flag
+  isChangePartyMode = false
 }
 
 /**
@@ -306,8 +361,14 @@ function updateJoinButtonState() {
   const nicknameInput = document.getElementById('nickname-input')
   const nickname = nicknameInput?.value.trim() || ''
 
-  const canJoin = selectedParty && nickname.length >= 2 && nickname.length <= 20
-  joinButton.disabled = !canJoin
+  if (isChangePartyMode) {
+    // In change mode, only need party selection
+    joinButton.disabled = !selectedParty
+  } else {
+    // In join mode, need party and nickname
+    const canJoin = selectedParty && nickname.length >= 2 && nickname.length <= 20
+    joinButton.disabled = !canJoin
+  }
 }
 
 /**
@@ -352,21 +413,12 @@ function handleNicknameInput(e) {
 }
 
 /**
- * Handle join game button click
+ * Handle join game button click (also handles change party)
  */
 async function handleJoinGame() {
   const nicknameInput = document.getElementById('nickname-input')
   const joinButton = document.getElementById('join-button')
   const errorEl = document.getElementById('nickname-error')
-  const nickname = nicknameInput.value.trim()
-
-  // Validate
-  const validation = validateNickname(nickname)
-  if (!validation.valid) {
-    errorEl.textContent = validation.error
-    errorEl.classList.remove('hidden')
-    return
-  }
 
   // Check party selection
   if (!selectedParty) {
@@ -374,27 +426,79 @@ async function handleJoinGame() {
     return
   }
 
-  // Disable button during join
+  if (isChangePartyMode) {
+    // Handle party change
+    await handleChangePartySubmit(joinButton)
+  } else {
+    // Handle new player join
+    const nickname = nicknameInput.value.trim()
+
+    // Validate nickname
+    const validation = validateNickname(nickname)
+    if (!validation.valid) {
+      errorEl.textContent = validation.error
+      errorEl.classList.remove('hidden')
+      return
+    }
+
+    // Disable button during join
+    joinButton.disabled = true
+    joinButton.textContent = 'กำลังเข้าร่วม...'
+
+    try {
+      session = await joinGame(selectedParty.id, nickname)
+      console.log('✅ Joined game:', session)
+
+      // Hide party selector overlay
+      hidePartySelectorOverlay()
+
+      // Initialize remaining game components
+      await initializeGameComponents()
+
+      toastManager.show(`ยินดีต้อนรับ ${nickname}!`, 'success')
+    } catch (error) {
+      console.error('Join game error:', error)
+      errorEl.textContent = error.message || 'Failed to join game'
+      errorEl.classList.remove('hidden')
+      joinButton.disabled = false
+      joinButton.textContent = 'เข้าร่วมเกม / Join Game'
+    }
+  }
+}
+
+/**
+ * Handle change party submission
+ */
+async function handleChangePartySubmit(joinButton) {
+  // Disable button during change
   joinButton.disabled = true
-  joinButton.textContent = 'กำลังเข้าร่วม...'
+  joinButton.textContent = 'กำลังเปลี่ยนพรรค...'
 
   try {
-    session = await joinGame(selectedParty.id, nickname)
-    console.log('✅ Joined game:', session)
+    const result = await changeParty(session.player.id, selectedParty.id)
+    console.log('Party changed:', result)
 
-    // Hide party selector overlay
+    // Reload session from localStorage
+    session = getSession()
+
+    // Hide overlay
     hidePartySelectorOverlay()
 
-    // Initialize remaining game components
-    await initializeGameComponents()
+    // Reset change mode flag
+    isChangePartyMode = false
 
-    toastManager.show(`ยินดีต้อนรับ ${nickname}!`, 'success')
+    // Update UI
+    updatePlayerInfo()
+    if (thailandMap) {
+      thailandMap.session = session
+    }
+
+    toastManager.show(`เปลี่ยนพรรคเป็น ${selectedParty.name_thai} สำเร็จ!`, 'success')
   } catch (error) {
-    console.error('Join game error:', error)
-    errorEl.textContent = error.message || 'Failed to join game'
-    errorEl.classList.remove('hidden')
+    console.error('Change party error:', error)
+    showError(error.message || 'Failed to change party')
     joinButton.disabled = false
-    joinButton.textContent = 'เข้าร่วมเกม / Join Game'
+    joinButton.textContent = 'เปลี่ยนพรรค / Change Party'
   }
 }
 
@@ -670,16 +774,39 @@ function updatePlayerInfo() {
     playerParty.innerHTML = `<span class="party-badge" style="background: ${party.official_color}"></span> ${party.name_thai}`
   }
 
-  // Update Your Empire panel - party info
+  // Update Your Empire panel - party info with logo
+  const empirePartyLogo = document.getElementById('empire-party-logo')
+  const empireLogoImg = document.getElementById('empire-logo-img')
   const empirePartyColor = document.getElementById('empire-party-color')
   const empirePartyName = document.getElementById('empire-party-name')
   const empirePlayerName = document.getElementById('empire-player-name')
   const empirePartyBadge = document.getElementById('empire-party-badge')
 
+  // Set party color CSS variable for glow effects
+  if (empirePartyLogo) {
+    empirePartyLogo.style.setProperty('--party-color', party.official_color)
+    empirePartyLogo.style.borderColor = party.official_color
+  }
+
+  // Show party logo if available
+  const logoUrl = getPartyLogo(party.ballot_number || party.id)
+  if (empireLogoImg && logoUrl) {
+    empireLogoImg.src = logoUrl
+    empireLogoImg.alt = party.name_english || party.name_thai
+    empireLogoImg.classList.remove('hidden')
+    empireLogoImg.onerror = () => {
+      empireLogoImg.classList.add('hidden')
+    }
+  } else if (empireLogoImg) {
+    empireLogoImg.classList.add('hidden')
+  }
+
+  // Fallback color dot (shown when no logo)
   if (empirePartyColor) {
     empirePartyColor.style.background = party.official_color
-    empirePartyColor.style.boxShadow = `0 0 8px ${party.official_color}`
+    empirePartyColor.style.boxShadow = `0 0 12px ${party.official_color}`
   }
+
   if (empirePartyName) {
     empirePartyName.textContent = party.name_thai || party.name_english
     empirePartyName.style.color = party.official_color
@@ -801,33 +928,8 @@ async function showChangePartyDialog() {
     }
   }
 
-  // Show party selector for change
-  const confirmed = confirm(
-    'คุณต้องการเปลี่ยนพรรคหรือไม่?\n' +
-    'การเปลี่ยนพรรคจะรีเซ็ตจำนวนคลิกของคุณเป็น 0\n\n' +
-    'Do you want to change party?\n' +
-    'Changing party will reset your click count to 0'
-  )
-
-  if (!confirmed) return
-
-  // For now, show simple prompt for party selection
-  // In full implementation, would show party selector modal
-  const newPartyId = prompt('Enter new party ID (1-57):')
-  if (!newPartyId) return
-
-  try {
-    const result = await changeParty(session.player.id, parseInt(newPartyId))
-    console.log('Party changed:', result)
-
-    // Reload session from localStorage
-    session = getSession()
-    updatePlayerInfo()
-    showError('✅ พรรคถูกเปลี่ยนแล้ว / Party changed successfully!')
-  } catch (error) {
-    console.error('Change party error:', error)
-    showError(error.message || 'Failed to change party')
-  }
+  // Show party selector overlay in change mode
+  showPartySelectorOverlay(true)
 }
 
 /**

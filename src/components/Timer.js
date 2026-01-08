@@ -97,26 +97,39 @@ export class GameTimer {
       return;
     }
 
-    this.container.innerHTML = `
-      <div class="timer-display">
-        <div class="timer-segment">
-          <span class="timer-value">${this.padNumber(timeLeft.days)}</span>
-          <span class="timer-label">Days</span>
+    // Check if this is the inline timer (inside missiles counter)
+    const isInline = this.container.classList.contains('game-timer-inline');
+
+    if (isInline) {
+      // Compact inline format: 30D 12:34:56
+      this.container.innerHTML = `
+        <span class="timer-days">${timeLeft.days}D</span>
+        <span class="timer-colon"> </span>
+        <span class="timer-time">${this.padNumber(timeLeft.hours)}:${this.padNumber(timeLeft.minutes)}:${this.padNumber(timeLeft.seconds)}</span>
+      `;
+    } else {
+      // Full format with labels
+      this.container.innerHTML = `
+        <div class="timer-display">
+          <div class="timer-segment">
+            <span class="timer-value">${this.padNumber(timeLeft.days)}</span>
+            <span class="timer-label">Days</span>
+          </div>
+          <div class="timer-segment">
+            <span class="timer-value">${this.padNumber(timeLeft.hours)}</span>
+            <span class="timer-label">Hours</span>
+          </div>
+          <div class="timer-segment">
+            <span class="timer-value">${this.padNumber(timeLeft.minutes)}</span>
+            <span class="timer-label">Min</span>
+          </div>
+          <div class="timer-segment">
+            <span class="timer-value">${this.padNumber(timeLeft.seconds)}</span>
+            <span class="timer-label">Sec</span>
+          </div>
         </div>
-        <div class="timer-segment">
-          <span class="timer-value">${this.padNumber(timeLeft.hours)}</span>
-          <span class="timer-label">Hours</span>
-        </div>
-        <div class="timer-segment">
-          <span class="timer-value">${this.padNumber(timeLeft.minutes)}</span>
-          <span class="timer-label">Min</span>
-        </div>
-        <div class="timer-segment">
-          <span class="timer-value">${this.padNumber(timeLeft.seconds)}</span>
-          <span class="timer-label">Sec</span>
-        </div>
-      </div>
-    `;
+      `;
+    }
   }
 
   /**

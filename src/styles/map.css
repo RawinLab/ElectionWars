@@ -1,47 +1,211 @@
-/* Thailand Map Styles */
+/* =================================================
+   ElectionWars Map Styles - Dark Cyberpunk Theme
+   Matching ClickWar.games aesthetic
+   ================================================= */
 
-/* Map container styles */
-.map-wrapper {
-  width: 100%;
-  max-width: 600px;
+/* ========================
+   Map Container
+   ======================== */
+.map-container {
+  position: relative;
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0f0f1a 100%);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  max-width: 800px;
   margin: 0 auto;
+  box-shadow:
+    0 0 20px rgba(0, 255, 255, 0.1),
+    0 0 40px rgba(0, 255, 136, 0.05),
+    inset 0 0 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
+.map-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.5), transparent);
+}
+
+/* ========================
+   Grid Overlay Effect - Enhanced for ClickWar style
+   ======================== */
+.grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  /* Primary grid - larger squares */
+  background-image:
+    linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+    /* Secondary grid - smaller squares */
+    linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100px 100px, 100px 100px, 25px 25px, 25px 25px;
+}
+
+.grid-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Diagonal lines for tech feel */
+  background-image:
+    linear-gradient(45deg, transparent 48%, rgba(124, 58, 237, 0.02) 49%, rgba(124, 58, 237, 0.02) 51%, transparent 52%),
+    linear-gradient(-45deg, transparent 48%, rgba(0, 255, 255, 0.02) 49%, rgba(0, 255, 255, 0.02) 51%, transparent 52%);
+  background-size: 60px 60px;
+}
+
+.grid-overlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Vignette effect */
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(15, 15, 35, 0.6) 100%);
+}
+
+/* ========================
+   Thailand Map SVG Container
+   ======================== */
 .thailand-map {
-  width: 100%;
-  height: auto;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  z-index: 2;
 }
 
 .thailand-map svg {
-  width: 100%;
-  height: auto;
+  width: 100% !important;
+  height: 100% !important;
   display: block;
+  filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.1));
 }
 
-/* Province styling */
+/* ========================
+   Province Styles - Election69 Inspired
+   ======================== */
 .province {
-  fill: var(--color-neutral, #E0E0E0);
-  stroke: white;
-  stroke-width: 1;
+  fill: #4B5563;
+  stroke: #FFFFFF;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
   cursor: pointer;
-  transition: fill 0.3s ease, transform 0.2s ease, filter 0.2s ease;
+  transition:
+    fill 0.3s ease,
+    filter 0.2s ease,
+    stroke-width 0.2s ease;
 }
 
 .province:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.2) saturate(1.2);
+  stroke-width: 2.5;
+  stroke: #FFFFFF;
 }
 
 .province.clicked {
-  animation: pulse 0.2s ease-out;
+  animation: province-pulse 0.3s ease-out;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); }
+/* Province ownership colors - Vibrant party colors */
+.province.owned-player {
+  fill: #FF6B00;
+  filter: drop-shadow(0 0 6px rgba(255, 107, 0, 0.5));
 }
 
-/* Click feedback floating number */
+.province.owned-enemy {
+  fill: #EF4444;
+  filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.5));
+}
+
+.province.contested {
+  fill: #F59E0B;
+  filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.5));
+}
+
+.province.neutral {
+  fill: #6B7280;
+}
+
+/* Province Labels */
+.province-label {
+  font-family: 'Noto Sans Thai', 'Sarabun', sans-serif;
+  font-size: 8px;
+  font-weight: 600;
+  fill: #FFFFFF;
+  text-anchor: middle;
+  dominant-baseline: middle;
+  pointer-events: none;
+  text-shadow:
+    1px 1px 2px rgba(0, 0, 0, 0.8),
+    -1px -1px 2px rgba(0, 0, 0, 0.8),
+    1px -1px 2px rgba(0, 0, 0, 0.8),
+    -1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.province-label.large {
+  font-size: 10px;
+}
+
+.province-label.small {
+  font-size: 6px;
+}
+
+/* ========================
+   Click Feedback Styles
+   ======================== */
+.click-feedback {
+  position: fixed;
+  font-size: 20px;
+  font-weight: bold;
+  pointer-events: none;
+  animation: float-up 0.8s ease-out forwards;
+  z-index: 1000;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  letter-spacing: 1px;
+}
+
+.click-feedback.defend {
+  color: #00ff88;
+  text-shadow:
+    0 0 10px rgba(0, 255, 136, 0.8),
+    0 0 20px rgba(0, 255, 136, 0.5),
+    0 0 30px rgba(0, 255, 136, 0.3);
+}
+
+.click-feedback.attack {
+  color: #ff4444;
+  text-shadow:
+    0 0 10px rgba(255, 68, 68, 0.8),
+    0 0 20px rgba(255, 68, 68, 0.5),
+    0 0 30px rgba(255, 68, 68, 0.3);
+}
+
+.click-feedback.capture {
+  color: #ffd700;
+  font-size: 28px;
+  text-shadow:
+    0 0 10px rgba(255, 215, 0, 0.8),
+    0 0 20px rgba(255, 215, 0, 0.5),
+    0 0 40px rgba(255, 215, 0, 0.3);
+  animation: float-up-capture 1s ease-out forwards;
+}
+
+/* Legacy class support */
 .click-number {
   position: fixed;
   font-size: 18px;
@@ -49,20 +213,195 @@
   pointer-events: none;
   animation: float-up 0.6s ease-out forwards;
   z-index: 100;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+  text-shadow: 0 0 10px currentColor;
 }
 
 .click-number.defend {
-  color: #4CAF50;  /* Green for +1 shield */
+  color: #00ff88;
 }
 
 .click-number.attack {
-  color: #F44336;  /* Red for -1 shield */
+  color: #ff4444;
 }
 
 .click-number.capture {
-  color: #FF9800;  /* Orange for capture */
+  color: #ffd700;
   font-size: 24px;
+}
+
+/* ========================
+   Province Tooltip - ClickWar Style
+   ======================== */
+.province-tooltip {
+  position: absolute;
+  background: linear-gradient(180deg, rgba(15, 15, 35, 0.98) 0%, rgba(10, 10, 25, 0.98) 100%);
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(0, 255, 255, 0.5);
+  border-radius: 10px;
+  padding: 16px 20px;
+  z-index: 1000;
+  pointer-events: none;
+  min-width: 200px;
+  box-shadow:
+    0 0 30px rgba(0, 255, 255, 0.3),
+    0 0 60px rgba(0, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.province-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
+}
+
+.province-tooltip .tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.province-tooltip .province-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #FFFFFF;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 1px;
+}
+
+.province-tooltip .home-badge {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 255, 136, 0.1));
+  border: 1px solid rgba(0, 255, 136, 0.5);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #00FF88;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.province-tooltip .province-info {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+.province-tooltip .tooltip-stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.province-tooltip .tooltip-stat-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.province-tooltip .tooltip-stat-value {
+  font-family: 'Fira Code', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #FFFFFF;
+}
+
+.province-tooltip .hp-bar-tooltip {
+  height: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 4px;
+  border: 1px solid rgba(0, 255, 136, 0.3);
+}
+
+.province-tooltip .hp-fill-tooltip {
+  height: 100%;
+  background: linear-gradient(90deg, #00FF88, #00CC66);
+  border-radius: 3px;
+  box-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+.province-tooltip .province-owner {
+  color: #00ff88;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}
+
+.province-tooltip .province-clicks {
+  color: #ffaa00;
+  font-weight: 600;
+  text-shadow: 0 0 8px rgba(255, 170, 0, 0.5);
+}
+
+.province-tooltip .shield-stat {
+  color: #00FFFF;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+/* ========================
+   Map Loading State
+   ======================== */
+.map-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: rgba(0, 255, 255, 0.7);
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+  gap: 16px;
+}
+
+.map-loading::before {
+  content: '';
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(0, 255, 255, 0.2);
+  border-top-color: #00ffff;
+  border-radius: 50%;
+  animation: loading-spin 1s linear infinite;
+}
+
+.map-loading-text {
+  font-size: 14px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  animation: loading-pulse 1.5s ease-in-out infinite;
+}
+
+/* ========================
+   Animations
+   ======================== */
+@keyframes province-pulse {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.5) drop-shadow(0 0 15px rgba(0, 255, 255, 0.6));
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+@keyframes province-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px currentColor) drop-shadow(0 0 25px currentColor);
+  }
 }
 
 @keyframes float-up {
@@ -72,38 +411,324 @@
   }
   100% {
     opacity: 0;
-    transform: translateY(-40px) scale(1.2);
+    transform: translateY(-50px) scale(1.3);
   }
 }
 
-/* Capture animation */
-.province.captured {
-  animation: capture-pulse 0.5s ease-out;
+@keyframes float-up-capture {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-30px) scale(1.5) rotate(5deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(1.8) rotate(-5deg);
+  }
 }
 
 @keyframes capture-pulse {
-  0% { filter: brightness(1); }
-  50% { filter: brightness(1.5) drop-shadow(0 0 10px currentColor); }
-  100% { filter: brightness(1); }
+  0% {
+    filter: brightness(1);
+  }
+  25% {
+    filter: brightness(2) drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+  }
+  50% {
+    filter: brightness(1.5) drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
+  }
+  75% {
+    filter: brightness(2) drop-shadow(0 0 20px rgba(255, 215, 0, 0.8));
+  }
+  100% {
+    filter: brightness(1);
+  }
 }
 
-/* Loading state */
-.map-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  color: var(--color-text-secondary);
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* Responsive adjustments */
+@keyframes loading-pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Captured province animation */
+.province.captured {
+  animation: capture-pulse 0.6s ease-out;
+}
+
+/* ========================
+   Map Wrapper (Legacy Support)
+   ======================== */
+.map-wrapper {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* ========================
+   Responsive Adjustments
+   ======================== */
 @media (max-width: 768px) {
-  .map-wrapper {
+  .map-container {
     max-width: 100%;
-    padding: 0 var(--spacing-sm);
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+
+  .grid-overlay {
+    background-size: 30px 30px;
+  }
+
+  .click-feedback {
+    font-size: 16px;
+  }
+
+  .click-feedback.capture {
+    font-size: 22px;
   }
 
   .click-number {
     font-size: 14px;
   }
+
+  .province-tooltip {
+    min-width: 120px;
+    padding: 8px 12px;
+  }
+
+  .province-tooltip .province-name {
+    font-size: 14px;
+  }
+
+  .province-tooltip .province-info {
+    font-size: 12px;
+  }
+
+  .map-wrapper {
+    max-width: 100%;
+    padding: 0 var(--spacing-sm, 8px);
+  }
+}
+
+@media (max-width: 480px) {
+  .grid-overlay {
+    background-size: 25px 25px;
+  }
+
+  .map-container {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+/* ========================
+   Missile Line Effect
+   ======================== */
+.missile-line {
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+@keyframes missileShoot {
+  0% {
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+/* Ambient Missile Animation */
+@keyframes ambientMissileShoot {
+  0% {
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+  30% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+.ambient-missile {
+  filter: drop-shadow(0 0 2px currentColor);
+}
+
+/* ========================
+   Impact Glow Effect
+   ======================== */
+@keyframes impactPulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* ========================
+   HP/Shield Overlay
+   ======================== */
+.hp-shield-overlay {
+  background: linear-gradient(180deg, rgba(15, 15, 35, 0.95) 0%, rgba(10, 10, 25, 0.95) 100%);
+  border: 1px solid rgba(0, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-width: 180px;
+  box-shadow:
+    0 0 20px rgba(0, 0, 0, 0.5),
+    0 0 30px rgba(0, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.hp-shield-overlay .overlay-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.hp-shield-overlay .overlay-flag {
+  font-size: 16px;
+}
+
+.hp-shield-overlay .overlay-name {
+  font-family: 'Sarabun', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #FFFFFF;
+  flex: 1;
+}
+
+.hp-shield-overlay .overlay-status {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 6px;
+  border-radius: 4px;
+  border: 1px solid;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hp-shield-overlay .overlay-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.hp-shield-overlay .stat-icon {
+  font-size: 12px;
+  width: 18px;
+  text-align: center;
+}
+
+.hp-shield-overlay .stat-label {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  min-width: 45px;
+}
+
+.hp-shield-overlay .stat-value {
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+  margin-left: auto;
+}
+
+.hp-shield-overlay .stat-value.shield-value {
+  color: #00FFFF;
+}
+
+.hp-shield-overlay .overlay-hp-bar {
+  height: 6px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+  margin: 6px 0 8px 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hp-shield-overlay .overlay-hp-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 8px currentColor;
+}
+
+@keyframes overlayFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes overlayFadeOut {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}
+
+/* ========================
+   Scanline Effect (Optional)
+   ======================== */
+.map-container.with-scanlines::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  z-index: 3;
 }

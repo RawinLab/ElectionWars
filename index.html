@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Election War - Real-time political clicker game for Thailand's 2026 election">
-  <meta name="keywords" content="thailand, election, game, political, clicker, 2026">
+  <meta name="description" content="ELECTION69WAR - Real-time political clicker game for Thailand's 2026 election">
+  <meta name="keywords" content="thailand, election, game, political, clicker, 2026, election69war">
   <meta name="author" content="RawinLab">
 
   <!-- Open Graph -->
-  <meta property="og:title" content="Election War - อีเลคชั่น วอร์">
+  <meta property="og:title" content="ELECTION69WAR - อีเลคชั่น69วอร์">
   <meta property="og:description" content="เลือกพรรคของคุณและแข่งขันยึดครอง 77 จังหวัด!">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="th_TH">
@@ -16,7 +16,12 @@
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-  <title>Election War - อีเลคชั่น วอร์ 🗳️</title>
+  <title>ELECTION69WAR - อีเลคชั่น69วอร์ 🗳️</title>
+
+  <!-- Google Fonts - Cyberpunk Gaming Typography + Thai Support -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Fira+Code:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Styles -->
   <link rel="stylesheet" href="/src/styles/main.css">
@@ -25,68 +30,203 @@
 </head>
 <body>
   <div id="app">
-    <!-- Party Selector Screen -->
-    <div id="party-selector" class="screen">
-      <header class="header">
-        <h1>Election War</h1>
-        <p class="subtitle">อีเลคชั่น วอร์ 🗳️</p>
-      </header>
-
-      <main class="party-selector-content">
-        <h2 id="choose-party-title">เลือกพรรคของคุณ / Choose Your Party</h2>
-        <div id="party-grid" class="party-grid">
-          <!-- Dynamically populated -->
-          <div class="loading">Loading parties...</div>
-        </div>
-
-        <div id="selected-party" class="selected-party hidden">
-          <div id="party-preview" class="party-preview"></div>
-          <input
-            type="text"
-            id="nickname-input"
-            placeholder="ชื่อเล่น / Nickname"
-            maxlength="20"
-            autocomplete="off"
-          >
-          <p id="nickname-error" class="error hidden"></p>
-          <button id="join-button" class="btn btn-primary">
-            เข้าร่วมเกม / Join Game
-          </button>
-        </div>
-      </main>
-    </div>
-
-    <!-- Game Screen -->
+    <!-- Game Screen - Full-width Map with Overlay Components -->
     <div id="game-screen" class="screen hidden">
-      <header class="game-header">
-        <div class="header-left">
-          <div id="player-info" class="player-info"></div>
+      <!-- Full-screen Map Background -->
+      <div class="fullscreen-map-container">
+        <div class="grid-overlay"></div>
+        <div id="thailand-map" class="thailand-map">
+          <!-- SVG map loaded here -->
+          <div class="loading">Loading map...</div>
         </div>
-        <div class="header-center">
-          <div id="game-timer" class="game-timer"></div>
+      </div>
+
+      <!-- Party Selector Overlay (shown when no party selected) -->
+      <div id="party-selector-overlay" class="party-selector-modal-overlay">
+        <div class="party-selector-modal-content">
+          <button id="close-party-modal-btn" class="btn-close-modal hidden" title="ยกเลิก">✕</button>
+          <div class="modal-header">
+            <h1 class="logo-text logo-thai-flag">ELECTION69WAR</h1>
+            <p class="modal-subtitle">เลือกพรรค ยึดครองจังหวัด ชิงชัยประเทศไทย</p>
+          </div>
+
+          <div class="modal-body">
+            <!-- Party Autocomplete -->
+            <div class="form-group">
+              <label class="form-label">เลือกพรรค / Select Party</label>
+              <div class="autocomplete-container">
+                <input
+                  type="text"
+                  id="party-search-input"
+                  class="autocomplete-input"
+                  placeholder="พิมพ์ชื่อพรรค..."
+                  autocomplete="off"
+                >
+                <div id="party-autocomplete-list" class="autocomplete-list hidden"></div>
+              </div>
+            </div>
+
+            <!-- Selected Party Preview -->
+            <div id="selected-party-preview" class="selected-party-preview hidden">
+              <div class="preview-party-color"></div>
+              <div class="preview-party-info">
+                <span class="preview-party-name"></span>
+                <span class="preview-party-english"></span>
+              </div>
+              <button id="clear-party-btn" class="btn-clear" title="Clear">✕</button>
+            </div>
+
+            <!-- Nickname Input -->
+            <div class="form-group">
+              <label class="form-label">ชื่อเล่น / Nickname</label>
+              <input
+                type="text"
+                id="nickname-input"
+                class="input-field"
+                placeholder="ใส่ชื่อของคุณ..."
+                maxlength="20"
+                autocomplete="off"
+              >
+              <p id="nickname-error" class="error-text hidden"></p>
+            </div>
+
+            <!-- Join Button -->
+            <button id="join-button" class="btn btn-primary btn-glow btn-join" disabled>
+              เข้าร่วมเกม / Join Game
+            </button>
+          </div>
         </div>
-        <div class="header-right">
-          <div id="connection-status" class="connection-status"></div>
-          <button id="settings-btn" class="btn btn-icon" title="Settings">⚙️</button>
+      </div>
+
+      <!-- Top Center Header Overlay -->
+      <header class="game-header-overlay">
+        <h1 class="logo-text logo-thai-flag">ELECTION69WAR</h1>
+        <div id="click-counter" class="missiles-counter">
+          <div id="game-timer" class="game-timer-inline"></div>
+          <span class="missiles-label">YOUR MISSILES</span>
+          <span id="click-count" class="missiles-count">0</span>
         </div>
       </header>
 
-      <main class="game-main">
-        <aside class="sidebar">
-          <div id="global-stats" class="global-stats"></div>
-          <div id="leaderboard" class="leaderboard"></div>
-        </aside>
+      <!-- Left Sidebar Overlay: Your Empire -->
+      <aside id="left-sidebar" class="sidebar-overlay sidebar-left-overlay">
+        <!-- Connection Status -->
+        <div id="connection-status" class="connection-status-sidebar"></div>
 
-        <section class="map-container">
-          <div id="thailand-map" class="thailand-map">
-            <!-- SVG map loaded here -->
-            <div class="loading">Loading map...</div>
+        <div class="overlay-panel">
+          <div class="panel-header">
+            <span class="panel-icon">👑</span>
+            <span class="panel-title">YOUR EMPIRE</span>
           </div>
-        </section>
-      </main>
+          <!-- Party Info with Logo -->
+          <div class="empire-party-info">
+            <div id="empire-party-badge" class="empire-party-badge">
+              <div id="empire-party-logo" class="empire-party-logo">
+                <img id="empire-logo-img" src="" alt="" class="empire-logo-img hidden">
+                <span id="empire-party-color" class="party-color-dot"></span>
+              </div>
+              <div class="empire-party-details">
+                <span id="empire-party-name" class="party-name">-</span>
+                <div class="empire-player">
+                  <span class="player-icon">👤</span>
+                  <span id="empire-player-name" class="player-name">-</span>
+                </div>
+              </div>
+            </div>
+            <button id="change-party-btn" class="btn-change-party">
+              <span class="btn-icon">🔄</span>
+              <span>เปลี่ยนพรรค</span>
+            </button>
+          </div>
+          <!-- Conquered Summary -->
+          <div class="conquered-summary">
+            <span class="conquered-icon">🏆</span>
+            <span class="conquered-label">ยึดครอง</span>
+            <span id="player-conquered-count" class="conquered-count">0</span>
+            <span class="conquered-suffix">จังหวัด</span>
+          </div>
+        </div>
 
-      <footer class="game-footer">
-        <!-- AdSense container (placeholder) -->
+        <!-- Conquered Provinces List -->
+        <div class="overlay-panel conquered-panel">
+          <div class="panel-header">
+            <span class="panel-icon">🗺️</span>
+            <span class="panel-title">จังหวัดที่ยึดครอง</span>
+          </div>
+          <div id="conquered-list" class="conquered-list">
+            <!-- Dynamically populated -->
+            <div class="conquered-empty">ยังไม่มีจังหวัดที่ยึดครอง</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Right Sidebar Overlay: Target & War Status -->
+      <aside id="right-sidebar" class="sidebar-overlay sidebar-right-overlay">
+        <!-- Target Panel -->
+        <div class="overlay-panel target-panel">
+          <div class="panel-header">
+            <span class="panel-icon">🎯</span>
+            <span class="panel-title">TARGET</span>
+          </div>
+          <div id="target-info" class="target-info-overlay">
+            <div class="target-country">
+              <span id="target-flag" class="country-flag">🇹🇭</span>
+              <span id="target-province-name" class="country-name">Select Province</span>
+            </div>
+            <div id="target-territory-type" class="territory-type">Enemy Territory</div>
+            <div class="health-section">
+              <div class="health-header">
+                <span class="health-label">Health</span>
+                <span id="target-health-value" class="health-value">0/0</span>
+                <span id="target-health-percent" class="health-percent">0%</span>
+              </div>
+              <div class="health-bar">
+                <div id="target-health-fill" class="health-fill"></div>
+              </div>
+              <div id="target-health-status" class="health-status">NEUTRAL</div>
+            </div>
+            <div class="target-shield-section">
+              <div class="shield-header">
+                <span class="shield-icon">💎</span>
+                <span class="shield-label">SHIELD</span>
+                <span id="target-shield-value" class="shield-value">0</span>
+              </div>
+              <div class="shield-bar">
+                <div id="target-shield-fill" class="shield-fill"></div>
+              </div>
+              <div id="target-shield-status" class="shield-status">UNPROTECTED</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conquered Panel (Right) -->
+        <div class="overlay-panel conquered-right-panel">
+          <div class="panel-header">
+            <span class="panel-icon">🏆</span>
+            <span class="panel-title">CONQUERED (<span id="conquered-total">0</span>)</span>
+          </div>
+          <div id="conquered-list-right" class="conquered-list-compact">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- War Status Panel -->
+        <div class="overlay-panel war-status-panel">
+          <div class="panel-header">
+            <span class="panel-icon">⚔️</span>
+            <span class="panel-title">WAR STATUS</span>
+          </div>
+          <div id="war-status-list" class="war-status-list">
+            <!-- Dynamically populated with global rankings -->
+          </div>
+        </div>
+      </aside>
+
+      <!-- Settings Button (Top Right) -->
+      <button id="settings-btn" class="settings-btn-overlay" title="Settings">⚙️</button>
+
+      <!-- Ad Container (Bottom) -->
+      <footer class="game-footer-overlay">
         <div id="ad-container" class="ad-container">
           <!-- Google AdSense code will be inserted here after approval -->
         </div>

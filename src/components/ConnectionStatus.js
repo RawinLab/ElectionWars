@@ -79,21 +79,15 @@ export class ConnectionStatus {
       return;
     }
 
-    // Create element if it doesn't exist
-    if (!this.element) {
-      this.element = document.createElement('div');
-      this.container.appendChild(this.element);
-    }
-
-    // Update classes
-    this.element.className = `connection-status ${this.status}`;
-
     // Ensure element is visible when rendering
-    this.element.style.display = '';
+    this.container.style.display = '';
 
-    // Update content
-    this.element.innerHTML = `
-      <span class="status-dot"></span>
+    // Determine indicator class based on status
+    const indicatorClass = this.status === 'reconnecting' ? 'connecting' : this.status;
+
+    // Update content directly in the container
+    this.container.innerHTML = `
+      <span class="status-indicator ${indicatorClass}"></span>
       <span class="status-text">${this.getStatusText()}</span>
     `;
   }

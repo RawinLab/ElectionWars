@@ -140,62 +140,44 @@
   letter-spacing: 3px;
 }
 
-.logo-election {
-  color: #7C3AED;
-  text-shadow:
-    0 0 5px rgba(124, 58, 237, 1),
-    0 0 10px rgba(124, 58, 237, 0.9),
-    0 0 20px rgba(124, 58, 237, 0.7),
-    0 0 40px rgba(124, 58, 237, 0.5),
-    0 0 60px rgba(124, 58, 237, 0.3);
-  animation: logo-purple-pulse 2s ease-in-out infinite;
+/* Thai Flag Gradient Logo */
+.logo-thai-flag {
+  background: linear-gradient(
+    90deg,
+    #FF3333 0%,      /* Bright Red */
+    #FF3333 18%,
+    #FFFFFF 18%,     /* White */
+    #FFFFFF 32%,
+    #1E50A0 32%,     /* Bright Blue */
+    #1E50A0 68%,
+    #FFFFFF 68%,     /* White */
+    #FFFFFF 82%,
+    #FF3333 82%,     /* Bright Red */
+    #FF3333 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.9))
+          drop-shadow(-1px -1px 0 rgba(0, 0, 0, 0.7))
+          drop-shadow(0 0 10px rgba(255, 51, 51, 0.5))
+          drop-shadow(0 0 20px rgba(30, 80, 160, 0.4));
+  animation: logo-thai-glow 2s ease-in-out infinite;
 }
 
-.logo-war {
-  color: #00FFFF;
-  text-shadow:
-    0 0 5px rgba(0, 255, 255, 1),
-    0 0 10px rgba(0, 255, 255, 0.9),
-    0 0 20px rgba(0, 255, 255, 0.7),
-    0 0 40px rgba(0, 255, 255, 0.5),
-    0 0 60px rgba(0, 255, 255, 0.3);
-  animation: logo-cyan-pulse 2s ease-in-out infinite;
-  animation-delay: 0.5s;
-}
-
-@keyframes logo-purple-pulse {
+@keyframes logo-thai-glow {
   0%, 100% {
-    text-shadow:
-      0 0 5px rgba(124, 58, 237, 1),
-      0 0 10px rgba(124, 58, 237, 0.9),
-      0 0 20px rgba(124, 58, 237, 0.7),
-      0 0 40px rgba(124, 58, 237, 0.5);
+    filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.9))
+            drop-shadow(-1px -1px 0 rgba(0, 0, 0, 0.7))
+            drop-shadow(0 0 10px rgba(255, 51, 51, 0.5))
+            drop-shadow(0 0 20px rgba(30, 80, 160, 0.4));
   }
   50% {
-    text-shadow:
-      0 0 10px rgba(124, 58, 237, 1),
-      0 0 20px rgba(124, 58, 237, 1),
-      0 0 40px rgba(124, 58, 237, 0.8),
-      0 0 60px rgba(124, 58, 237, 0.6),
-      0 0 80px rgba(124, 58, 237, 0.4);
-  }
-}
-
-@keyframes logo-cyan-pulse {
-  0%, 100% {
-    text-shadow:
-      0 0 5px rgba(0, 255, 255, 1),
-      0 0 10px rgba(0, 255, 255, 0.9),
-      0 0 20px rgba(0, 255, 255, 0.7),
-      0 0 40px rgba(0, 255, 255, 0.5);
-  }
-  50% {
-    text-shadow:
-      0 0 10px rgba(0, 255, 255, 1),
-      0 0 20px rgba(0, 255, 255, 1),
-      0 0 40px rgba(0, 255, 255, 0.8),
-      0 0 60px rgba(0, 255, 255, 0.6),
-      0 0 80px rgba(0, 255, 255, 0.4);
+    filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.9))
+            drop-shadow(-1px -1px 0 rgba(0, 0, 0, 0.7))
+            drop-shadow(0 0 20px rgba(255, 51, 51, 0.7))
+            drop-shadow(0 0 35px rgba(30, 80, 160, 0.6))
+            drop-shadow(0 0 50px rgba(255, 255, 255, 0.3));
   }
 }
 
@@ -395,6 +377,7 @@ input {
 }
 
 .party-selector-modal-content {
+  position: relative;
   background: linear-gradient(180deg, rgba(15, 15, 35, 0.98) 0%, rgba(10, 10, 25, 0.98) 100%);
   border: 1px solid rgba(0, 255, 255, 0.4);
   border-radius: 16px;
@@ -405,6 +388,37 @@ input {
     0 0 40px rgba(0, 255, 255, 0.2),
     0 0 80px rgba(0, 255, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Close button for change party mode */
+.btn-close-modal {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 100, 100, 0.5);
+  border-radius: 50%;
+  background: rgba(255, 50, 50, 0.2);
+  color: #ff6666;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.btn-close-modal:hover {
+  background: rgba(255, 50, 50, 0.4);
+  border-color: rgba(255, 100, 100, 0.8);
+  color: #ff8888;
+  box-shadow: 0 0 12px rgba(255, 50, 50, 0.4);
+}
+
+.btn-close-modal.hidden {
+  display: none;
 }
 
 .party-selector-modal-content .modal-header {
@@ -1391,9 +1405,13 @@ textarea::placeholder {
 }
 
 .game-header-overlay .logo-text {
-  font-size: 28px;
-  letter-spacing: 3px;
-  margin-bottom: 8px;
+  font-size: 32px;
+  letter-spacing: 4px;
+  margin-bottom: 12px;
+}
+
+.game-header-overlay .logo-thai-flag {
+  font-size: 32px !important;
 }
 
 /* Missiles Counter (YOUR MISSILES) - ClickWar Style */
@@ -1404,8 +1422,8 @@ textarea::placeholder {
   background: linear-gradient(180deg, rgba(20, 20, 40, 0.98) 0%, rgba(10, 10, 25, 0.98) 100%);
   border: 2px solid rgba(0, 255, 255, 0.5);
   border-radius: 12px;
-  padding: 16px 32px;
-  min-width: 200px;
+  padding: 12px 24px;
+  min-width: 180px;
   backdrop-filter: blur(15px);
   box-shadow:
     0 0 30px rgba(0, 255, 255, 0.3),
@@ -1425,26 +1443,39 @@ textarea::placeholder {
   background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
 }
 
-.missiles-icon {
+/* Inline Timer inside missiles counter */
+.game-timer-inline {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
   color: #00FFFF;
-  font-size: 12px;
+  text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
   margin-bottom: 4px;
-  text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+  letter-spacing: 1px;
+}
+
+.game-timer-inline .timer-segment {
+  display: inline;
+}
+
+.game-timer-inline .timer-colon {
+  opacity: 0.7;
+  margin: 0 1px;
 }
 
 .missiles-label {
   font-family: var(--font-display);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 3px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 4px;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2px;
 }
 
 .missiles-count {
   font-family: var(--font-display);
-  font-size: 42px;
+  font-size: 28px;
   font-weight: 900;
   color: #FFFFFF;
   text-shadow:
@@ -1454,15 +1485,9 @@ textarea::placeholder {
   letter-spacing: 2px;
 }
 
-/* World Missiles/Sec */
+/* World Missiles/Sec - Hidden */
 .world-missiles {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 170, 0, 0.15);
-  border: 1px solid rgba(255, 170, 0, 0.4);
-  border-radius: 20px;
-  padding: 6px 16px;
+  display: none;
 }
 
 .world-icon {
@@ -1577,40 +1602,84 @@ textarea::placeholder {
    YOUR EMPIRE Panel Styling
    ============================================ */
 .empire-party-info {
-  padding: 12px 16px;
+  padding: 16px;
   border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }
 
 .empire-party-badge {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 14px;
+  margin-bottom: 12px;
 }
 
-.party-color-dot {
-  width: 16px;
-  height: 16px;
+/* Party Logo Container */
+.empire-party-logo {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid var(--party-color, rgba(255, 255, 255, 0.2));
+  box-shadow:
+    0 0 15px var(--party-color, rgba(0, 255, 255, 0.3)),
+    inset 0 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empire-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.empire-logo-img.hidden {
+  display: none;
+}
+
+/* Fallback color dot when no logo */
+.empire-party-logo .party-color-dot {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--party-color, #6b7280);
-  box-shadow: 0 0 8px var(--party-color, #6b7280);
-  flex-shrink: 0;
+  box-shadow: 0 0 12px var(--party-color, #6b7280);
+}
+
+.empire-logo-img:not(.hidden) + .party-color-dot {
+  display: none;
+}
+
+/* Party Details (name + player) */
+.empire-party-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .empire-party-badge .party-name {
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--party-color, #FFFFFF);
   text-shadow: 0 0 10px var(--party-color, rgba(255, 255, 255, 0.5));
+  line-height: 1.3;
+  word-wrap: break-word;
 }
 
-.empire-player {
+.empire-party-info .empire-player {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  padding-left: 26px;
+  gap: 6px;
+  margin-bottom: 0;
+  padding-left: 0;
 }
 
 .player-icon {
@@ -1620,7 +1689,7 @@ textarea::placeholder {
 
 .player-name {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12px;
   color: var(--color-text-secondary);
 }
 
@@ -2320,7 +2389,11 @@ textarea::placeholder {
   }
 
   .missiles-count {
-    font-size: 28px;
+    font-size: 24px;
+  }
+
+  .game-timer-inline {
+    font-size: 11px;
   }
 
   .overlay-panel .panel-header {
@@ -2359,28 +2432,21 @@ textarea::placeholder {
   }
 
   .missiles-counter {
-    min-width: 120px;
+    min-width: 110px;
     padding: 6px 12px;
   }
 
   .missiles-count {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .missiles-label {
     font-size: 8px;
+    letter-spacing: 1px;
   }
 
-  .world-missiles {
-    padding: 4px 10px;
-  }
-
-  .world-label {
-    font-size: 8px;
-  }
-
-  .world-count {
-    font-size: 12px;
+  .game-timer-inline {
+    font-size: 10px;
   }
 
   .connection-status-overlay,

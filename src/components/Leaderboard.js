@@ -29,38 +29,43 @@ export class Leaderboard {
   render(data) {
     if (!this.container) return;
 
+    const top10 = data.slice(0, 10);
+
     const html = `
-      <div class="leaderboard-header">
-        <h3>Party Rankings</h3>
+      <div class="leaderboard-content">
+        <div class="leaderboard-header">
+          <span class="leaderboard-title">LEADERBOARD</span>
+        </div>
+        <table class="leaderboard-table">
+          <tbody>
+            ${top10.map((party, index) => this.renderRow(party, index + 1)).join('')}
+          </tbody>
+        </table>
       </div>
-      <table class="leaderboard-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Party</th>
-            <th>Provinces</th>
-            <th>Clicks</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${data.map((party, index) => this.renderRow(party, index + 1)).join('')}
-        </tbody>
-      </table>
     `;
 
     this.container.innerHTML = html;
   }
 
   renderRow(party, rank) {
+    const isTop3 = rank <= 3;
+    const rankClass = isTop3 ? `rank-${rank} rank-glow` : '';
+
     return `
-      <tr data-party-id="${party.party_id}">
-        <td>${rank}</td>
-        <td>
-          <span class="party-badge" style="background: ${party.party_color}"></span>
-          ${party.party_name}
+      <tr class="leaderboard-row ${isTop3 ? 'top-3' : ''}" data-party-id="${party.party_id}">
+        <td class="rank-cell">
+          <span class="rank ${rankClass}">${rank}</span>
         </td>
-        <td>${party.provinces_count}</td>
-        <td>${this.formatNumber(party.total_clicks)}</td>
+        <td class="party-cell">
+          <span class="party-badge" style="background-color: ${party.party_color}"></span>
+          <span class="party-name">${party.party_name}</span>
+        </td>
+        <td class="provinces-cell">
+          <span class="provinces-count">${party.provinces_count}</span>
+        </td>
+        <td class="clicks-cell">
+          <span class="clicks-count">${this.formatNumber(party.total_clicks)}</span>
+        </td>
       </tr>
     `;
   }
@@ -106,19 +111,21 @@ export class Leaderboard {
   update(data) {
     if (!this.container || !data) return;
 
-    const row = this.container.querySelector(`tr[data-party-id="${data.party_id}"]`);
+    const row = this.container.querySelector(`.leaderboard-row[data-party-id="${data.party_id}"]`);
 
     if (!row) return;
 
-    const cells = row.querySelectorAll('td');
-
-    if (cells.length >= 4) {
-      if (data.provinces_count !== undefined) {
-        cells[2].textContent = data.provinces_count;
+    if (data.provinces_count !== undefined) {
+      const provincesEl = row.querySelector('.provinces-count');
+      if (provincesEl) {
+        provincesEl.textContent = data.provinces_count;
       }
+    }
 
-      if (data.total_clicks !== undefined) {
-        cells[3].textContent = this.formatNumber(data.total_clicks);
+    if (data.total_clicks !== undefined) {
+      const clicksEl = row.querySelector('.clicks-count');
+      if (clicksEl) {
+        clicksEl.textContent = this.formatNumber(data.total_clicks);
       }
     }
   }

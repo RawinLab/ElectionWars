@@ -94,8 +94,9 @@ export class ThailandMap {
     }
 
     const { data, error } = await supabase.rpc('click_province', {
+      p_player_id: this.session.player.id,
       p_province_id: provinceId,
-      p_session_id: this.session.id
+      p_party_id: this.session.party.id
     })
 
     if (error) {
@@ -106,9 +107,36 @@ export class ThailandMap {
     if (data) {
       this.showClickFeedback(provinceId, data)
 
-      if (data.type === 'capture' || data.type === 'attack' || data.type === 'defend') {
+      if (data.action === 'capture' || data.action === 'attack' || data.action === 'defend') {
         await this.loadData()
         this.updateAllProvinces()
+
+        // Update target sidebar after data reload
+        this.updateTargetSidebar(provinceId)
+
+        // Increment session click count and update UI elements
+        if (this.session && this.session.player) {
+          this.session.player.total_clicks = (this.session.player.total_clicks || 0) + 1
+          const formattedClicks = this.session.player.total_clicks.toLocaleString()
+
+          // Update header click counter (new cyberpunk UI)
+          const clickCount = document.getElementById('click-count')
+          if (clickCount) {
+            clickCount.textContent = formattedClicks
+          }
+
+          // Update sidebar player clicks
+          const playerClicks = document.getElementById('player-clicks')
+          if (playerClicks) {
+            playerClicks.textContent = formattedClicks
+          }
+
+          // Legacy header click counter
+          const headerClickCounter = document.getElementById('header-click-count')
+          if (headerClickCounter) {
+            headerClickCounter.textContent = formattedClicks
+          }
+        }
       }
     }
   }
@@ -151,7 +179,7 @@ export class ThailandMap {
     feedback.style.zIndex = '1000'
     feedback.style.animation = 'feedbackFloat 1s ease-out forwards'
 
-    switch (result.type) {
+    switch (result.action) {
       case 'defend':
         feedback.textContent = '+1'
         feedback.style.color = '#22c55e'
@@ -190,6 +218,45 @@ export class ThailandMap {
     }, 500)
   }
 
+  updateTargetSidebar(provinceId) {
+    const state = this.provinceStates.get(provinceId)
+    const provinceEl = this.container.querySelector(`[data-id="${provinceId}"]`)
+
+    // Get province names from SVG attributes
+    const nameThai = provinceEl?.getAttribute('data-name-thai') || ''
+    const nameEnglish = provinceEl?.getAttribute('data-name-english') || ''
+
+    // Update province name
+    const targetName = document.getElementById('target-province-name')
+    const targetThai = document.getElementById('target-province-thai')
+    if (targetName) targetName.textContent = nameEnglish || `Province ${provinceId}`
+    if (targetThai) targetThai.textContent = nameThai
+
+    // Update shield bar
+    if (state) {
+      const shieldPct = Math.round((state.shield_current / state.shield_max) * 100)
+      const shieldFill = document.getElementById('target-shield-fill')
+      const shieldValue = document.getElementById('target-shield-value')
+      if (shieldFill) shieldFill.style.width = `${shieldPct}%`
+      if (shieldValue) shieldValue.textContent = `${shieldPct}%`
+
+      // Update total clicks
+      const totalClicks = document.getElementById('target-total-clicks')
+      if (totalClicks) totalClicks.textContent = state.total_clicks?.toLocaleString() || '0'
+
+      // Update controller party
+      const controllerEl = document.getElementById('target-controller-party')
+      if (controllerEl) {
+        const party = this.parties.get(state.controlling_party_id)
+        if (party) {
+          controllerEl.innerHTML = `<span class="party-badge" style="background: ${party.official_color}"></span> ${party.name_thai}`
+        } else {
+          controllerEl.innerHTML = '<span class="neutral-badge">Neutral</span>'
+        }
+      }
+    }
+  }
+
   setupHoverHandlers() {
     const provinces = this.container.querySelectorAll('[data-id]')
 
@@ -217,6 +284,9 @@ export class ThailandMap {
         const nameEnglish = event.currentTarget.getAttribute('data-name-english')
         const state = this.provinceStates.get(provinceId)
         const party = state ? this.parties.get(state.controlling_party_id) : null
+
+        // Update the target sidebar
+        this.updateTargetSidebar(provinceId)
 
         let tooltipContent = `<strong>${nameThai}</strong><br><small>${nameEnglish}</small>`
         if (state) {
