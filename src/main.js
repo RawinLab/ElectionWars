@@ -282,6 +282,24 @@ function setupEventListeners() {
       }
     })
   }
+
+  // Party provinces modal
+  const partyProvincesModal = document.getElementById('party-provinces-modal')
+  const closePartyProvincesBtn = document.getElementById('close-party-provinces-btn')
+
+  if (closePartyProvincesBtn && partyProvincesModal) {
+    closePartyProvincesBtn.addEventListener('click', () => {
+      partyProvincesModal.classList.add('hidden')
+    })
+  }
+
+  if (partyProvincesModal) {
+    partyProvincesModal.addEventListener('click', (e) => {
+      if (e.target === partyProvincesModal) {
+        partyProvincesModal.classList.add('hidden')
+      }
+    })
+  }
 }
 
 /**
@@ -498,6 +516,116 @@ async function showAllUsersModal() {
   } catch (err) {
     console.error('Failed to fetch all users:', err)
     listContainer.innerHTML = '<div class="all-users-loading">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>'
+  }
+}
+
+/**
+ * Show party provinces modal
+ * @param {number} partyId - Party ID
+ * @param {string} partyName - Party name
+ * @param {string} partyColor - Party color
+ */
+async function showPartyProvincesModal(partyId, partyName, partyColor) {
+  const modal = document.getElementById('party-provinces-modal')
+  const listContainer = document.getElementById('party-provinces-list')
+  const titleEl = document.getElementById('party-provinces-modal-title')
+
+  if (!modal || !listContainer) return
+
+  // Update title with party name
+  if (titleEl) {
+    titleEl.innerHTML = `🏆 จังหวัดที่ ${partyName} ยึดครอง`
+    titleEl.style.color = partyColor
+    titleEl.style.textShadow = `0 0 10px ${partyColor}80`
+  }
+
+  // Update modal border color to match party
+  const modalContent = modal.querySelector('.party-provinces-modal-content')
+  if (modalContent) {
+    modalContent.style.borderColor = `${partyColor}50`
+    modalContent.style.boxShadow = `0 0 30px ${partyColor}25, inset 0 0 30px rgba(0, 0, 0, 0.3)`
+  }
+
+  // Show modal with loading state
+  modal.classList.remove('hidden')
+  listContainer.innerHTML = '<div class="party-provinces-loading">กำลังโหลด...</div>'
+
+  try {
+    // Fetch provinces controlled by this party
+    const { data: provinces, error } = await supabase
+      .from('province_state')
+      .select(`
+        province_id,
+        shield_current,
+        shield_max,
+        controlling_party_id,
+        provinces (
+          id,
+          name_thai,
+          name_english,
+          population
+        )
+      `)
+      .eq('controlling_party_id', partyId)
+
+    if (error) throw error
+
+    if (!provinces || provinces.length === 0) {
+      listContainer.innerHTML = '<div class="party-provinces-empty">ยังไม่มีจังหวัดที่ยึดครอง</div>'
+      return
+    }
+
+    // Render province cards
+    listContainer.innerHTML = provinces.map(state => {
+      const province = state.provinces
+      if (!province) return ''
+
+      const shieldPercent = state.shield_max > 0 ? (state.shield_current / state.shield_max) * 100 : 0
+      const hpMax = state.shield_max // In this game, HP max equals shield max
+      const hpPercent = shieldPercent // Same as shield for display
+
+      return `
+        <div class="province-card" data-province-id="${province.id}">
+          <div class="province-card-header">
+            <div class="province-card-color" style="background: ${partyColor};"></div>
+            <span class="province-card-name">${province.name_thai}</span>
+          </div>
+          <div class="province-card-stats">
+            <div class="province-stat-row">
+              <span class="province-stat-icon">❤️</span>
+              <span class="province-stat-label">HP</span>
+              <div class="province-stat-bar">
+                <div class="province-stat-fill hp" style="width: ${hpPercent}%"></div>
+              </div>
+              <span class="province-stat-value">${state.shield_current.toLocaleString()}/${state.shield_max.toLocaleString()}</span>
+            </div>
+            <div class="province-stat-row">
+              <span class="province-stat-icon">🛡️</span>
+              <span class="province-stat-label">Shield</span>
+              <div class="province-stat-bar">
+                <div class="province-stat-fill shield" style="width: ${shieldPercent}%"></div>
+              </div>
+              <span class="province-stat-value">${shieldPercent.toFixed(1)}%</span>
+            </div>
+          </div>
+        </div>
+      `
+    }).join('')
+
+    // Add click handlers to province cards (focus on map)
+    listContainer.querySelectorAll('.province-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const provinceId = parseInt(card.dataset.provinceId)
+        if (thailandMap) {
+          thailandMap.updateTargetSidebar(provinceId)
+          modal.classList.add('hidden')
+        }
+      })
+    })
+
+  } catch (err) {
+    console.error('Failed to fetch party provinces:', err)
+    listContainer.innerHTML = '<div class="party-provinces-loading">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>'
   }
 }
 
@@ -996,7 +1124,7 @@ function renderConqueredLeaderboard() {
     const partyColor = party.official_color || party.party_color
     const provincesCount = party.provinces_controlled ?? party.provinces_count ?? 0
     return `
-      <div class="conquered-leaderboard-item">
+      <div class="conquered-leaderboard-item" data-party-id="${party.party_id}" data-party-name="${party.party_name}" data-party-color="${partyColor}">
         <span class="conquered-rank ${rankClass}">${rank}</span>
         <span class="conquered-party-badge" style="background-color: ${partyColor}"></span>
         <span class="conquered-party-name">${party.party_name}</span>
@@ -1006,6 +1134,16 @@ function renderConqueredLeaderboard() {
   }).join('')
 
   container.innerHTML = html
+
+  // Add click handlers to show party provinces modal
+  container.querySelectorAll('.conquered-leaderboard-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const partyId = parseInt(item.dataset.partyId)
+      const partyName = item.dataset.partyName
+      const partyColor = item.dataset.partyColor
+      showPartyProvincesModal(partyId, partyName, partyColor)
+    })
+  })
 }
 
 /**

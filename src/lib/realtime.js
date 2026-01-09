@@ -429,28 +429,34 @@ export class RealtimeManager {
   }
 
   /**
-   * Calculate missiles per minute from recent events
+   * Calculate missiles per minute from recent events (5-minute rolling average)
    * @private
    */
   _calculateMissilesPerMinute() {
     const now = Date.now()
-    const oneMinuteAgo = now - 60000
+    const fiveMinutesAgo = now - 300000 // 5 minutes = 300,000 ms
 
-    // Filter events from last 60 seconds
-    this.missileEvents = this.missileEvents.filter(e => e.timestamp > oneMinuteAgo)
+    // Filter events from last 5 minutes
+    this.missileEvents = this.missileEvents.filter(e => e.timestamp > fiveMinutesAgo)
 
-    // Sum up all missiles in the last minute
+    // Sum up all missiles in the last 5 minutes
     const totalMissiles = this.missileEvents.reduce((sum, e) => sum + e.count, 0)
 
-    // Calculate actual rate based on time window
-    const oldestEvent = this.missileEvents[0]
     let rate = 0
 
-    if (this.missileEvents.length > 0 && oldestEvent) {
-      const timeSpan = (now - oldestEvent.timestamp) / 1000 // in seconds
-      if (timeSpan > 0) {
-        // Calculate per minute rate
-        rate = Math.round((totalMissiles / timeSpan) * 60)
+    if (this.missileEvents.length > 0) {
+      // Calculate the actual time window we have data for
+      const oldestEvent = this.missileEvents[0]
+      const newestEvent = this.missileEvents[this.missileEvents.length - 1]
+
+      // Time span from oldest event to now (in minutes)
+      const timeSpanMinutes = (now - oldestEvent.timestamp) / 60000
+
+      if (timeSpanMinutes > 0) {
+        // Average missiles per minute over the time span
+        // Use at least 1 minute as denominator to avoid inflated rates at start
+        const effectiveMinutes = Math.max(timeSpanMinutes, 1)
+        rate = Math.round(totalMissiles / effectiveMinutes)
       }
     }
 
