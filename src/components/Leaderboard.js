@@ -52,6 +52,8 @@ export class Leaderboard {
   renderRow(party, rank) {
     const isTop3 = rank <= 3;
     const rankClass = isTop3 ? `rank-${rank} rank-glow` : '';
+    const partyColor = party.official_color || party.party_color;
+    const provincesCount = party.provinces_controlled ?? party.provinces_count ?? 0;
 
     return `
       <tr class="leaderboard-row ${isTop3 ? 'top-3' : ''}" data-party-id="${party.party_id}">
@@ -59,11 +61,11 @@ export class Leaderboard {
           <span class="rank ${rankClass}">${rank}</span>
         </td>
         <td class="party-cell">
-          <span class="party-badge" style="background-color: ${party.party_color}"></span>
+          <span class="party-badge" style="background-color: ${partyColor}"></span>
           <span class="party-name">${party.party_name}</span>
         </td>
         <td class="provinces-cell">
-          <span class="provinces-count">${party.provinces_count}</span>
+          <span class="provinces-count">${provincesCount}</span>
         </td>
         <td class="clicks-cell">
           <span class="clicks-count">${this.formatNumber(party.total_clicks)}</span>
@@ -117,10 +119,11 @@ export class Leaderboard {
 
     if (!row) return;
 
-    if (data.provinces_count !== undefined) {
+    const provincesCount = data.provinces_controlled ?? data.provinces_count;
+    if (provincesCount !== undefined) {
       const provincesEl = row.querySelector('.provinces-count');
       if (provincesEl) {
-        provincesEl.textContent = data.provinces_count;
+        provincesEl.textContent = provincesCount;
       }
     }
 

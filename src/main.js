@@ -996,12 +996,14 @@ function renderConqueredLeaderboard() {
   const html = top5.map((party, index) => {
     const rank = index + 1
     const rankClass = rank <= 3 ? `rank-${rank}` : ''
+    const partyColor = party.official_color || party.party_color
+    const provincesCount = party.provinces_controlled ?? party.provinces_count ?? 0
     return `
       <div class="conquered-leaderboard-item">
         <span class="conquered-rank ${rankClass}">${rank}</span>
-        <span class="conquered-party-badge" style="background-color: ${party.party_color}"></span>
+        <span class="conquered-party-badge" style="background-color: ${partyColor}"></span>
         <span class="conquered-party-name">${party.party_name}</span>
-        <span class="conquered-province-count">${party.provinces_count}</span>
+        <span class="conquered-province-count">${provincesCount}</span>
       </div>
     `
   }).join('')
@@ -1027,13 +1029,15 @@ function renderFullLeaderboard() {
     const rank = index + 1
     const rankClass = rank <= 3 ? `rank-${rank}` : ''
     const isTop3 = rank <= 3
+    const partyColor = party.official_color || party.party_color
+    const provincesCount = party.provinces_controlled ?? party.provinces_count ?? 0
     return `
       <div class="full-leaderboard-item ${isTop3 ? 'top-3' : ''}">
         <span class="full-leaderboard-rank ${rankClass}">${rank}</span>
-        <span class="full-leaderboard-badge" style="background-color: ${party.party_color}"></span>
+        <span class="full-leaderboard-badge" style="background-color: ${partyColor}"></span>
         <span class="full-leaderboard-name">${party.party_name}</span>
         <div class="full-leaderboard-stats">
-          <span class="full-leaderboard-provinces">${party.provinces_count}</span>
+          <span class="full-leaderboard-provinces">${provincesCount}</span>
         </div>
       </div>
     `
@@ -1177,10 +1181,11 @@ function handleGameEnd() {
     const resultsEl = document.getElementById('final-results')
     if (resultsEl) {
       const winner = leaderboard.currentData[0]
+      const provincesCount = winner.provinces_controlled ?? winner.provinces_count ?? 0
       resultsEl.innerHTML = `
         <div class="winner-announcement">
           <h2>🏆 Winner: ${winner.party_name}</h2>
-          <p>Provinces Controlled: ${winner.provinces_count}</p>
+          <p>Provinces Controlled: ${provincesCount}</p>
           <p>Total Clicks: ${leaderboard.formatNumber(winner.total_clicks)}</p>
         </div>
       `
