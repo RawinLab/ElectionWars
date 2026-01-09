@@ -955,11 +955,8 @@ async function showGameScreen() {
  * Initialize the leaderboard component
  */
 async function initializeLeaderboard() {
-  const leaderboardContainer = document.getElementById('leaderboard')
-  if (!leaderboardContainer) {
-    console.warn('Leaderboard container not found')
-    return
-  }
+  // Leaderboard doesn't need a visible container - data is used for conquered panel and modal
+  const leaderboardContainer = document.getElementById('full-leaderboard-list')
 
   try {
     leaderboard = new Leaderboard(leaderboardContainer)
