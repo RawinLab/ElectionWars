@@ -54,12 +54,22 @@ Each province has a shield based on its population:
 | Component | Technology |
 |-----------|------------|
 | **Frontend** | Vite + Vanilla JavaScript |
+| **Map Rendering** | D3.js v7.9 |
+| **Map Data** | GeoJSON (77 provinces) |
 | **Backend** | Supabase (PostgreSQL + Realtime) |
 | **Hosting** | Firebase Hosting |
 | **Auth** | Supabase Anonymous Auth |
 | **Real-time** | Supabase Realtime (WebSocket) |
 | **Testing** | Vitest + Playwright |
 | **Monetization** | Google AdSense |
+
+### Map Implementation
+
+The interactive Thailand map uses **D3.js** for rendering SVG polygons from GeoJSON data:
+
+- **Data Source:** [cvibhagool/thailand-map](https://github.com/cvibhagool/thailand-map) (TopoJSON converted to GeoJSON)
+- **File:** `/public/thailand-provinces-simple.geojson`
+- **Features:** 77 provinces with Thai/English names, zoom/pan support, real-time color updates
 
 ---
 
@@ -68,8 +78,9 @@ Each province has a shield based on its population:
 ```
 ElectionWars/
 ├── public/
-│   ├── sounds/              # Sound effects
-│   └── thailand-map.svg     # SVG map of Thailand
+│   ├── sounds/                          # Sound effects
+│   ├── party-logos/                     # Party logo images
+│   └── thailand-provinces-simple.geojson # GeoJSON map data (77 provinces)
 ├── src/
 │   ├── lib/
 │   │   ├── supabase.js      # Supabase client
@@ -77,7 +88,7 @@ ElectionWars/
 │   │   ├── realtime.js      # Realtime subscriptions
 │   │   └── i18n.js          # Internationalization
 │   ├── components/
-│   │   ├── Map.js           # Thailand map
+│   │   ├── D3Map.js         # Thailand map (D3.js)
 │   │   ├── PartySelector.js # Party selection
 │   │   ├── Leaderboard.js   # Rankings
 │   │   ├── Timer.js         # Countdown
